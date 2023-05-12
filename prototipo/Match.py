@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from GameObject import GameObject # to do - implement GameObject class
+from GameObject import GameObject
 
 class Match:
     def __init__(self):
