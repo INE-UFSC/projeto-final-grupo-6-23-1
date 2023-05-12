@@ -1,7 +1,6 @@
 from abc import ABC
-
-
-class Character(ABC):
+from MovingObjects import MovingObjects
+class Character(MovingObjects, ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, goals: int = 0):
         super.__init__(self, width, height, pos_x, pos_y, speed_x, speed_y)
         self.__goals = goals
