@@ -1,5 +1,5 @@
 class GameObject:
-    def __init__(self, width, height, pos_x, pos_y):
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
         self.__width = width
         self.__height = height
         self.__pos_x = pos_x
