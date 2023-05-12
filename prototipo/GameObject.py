@@ -1,31 +1,24 @@
+from pygame import Rect
+
 class GameObject:
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
-        self.__width = width
-        self.__height = height
-        self.__pos_x = pos_x
-        self.__pos_y = pos_y
+        self.__rect = Rect(pos_x, pos_y, width, height)
 
-    # getters and setters
+    # getters
     def get_width(self) -> int:
-        return self.__width
+        return self.__rect.width
     
     def get_height(self) -> int:
-        return self.__height
+        return self.__rect.height
     
     def get_pos_x(self) -> int:
-        return self.__pos_x
+        return self.__rect.x
     
     def get_pos_y(self) -> int:
-        return self.__pos_y
+        return self.__rect.y
     
-    def set_width(self, witdh: int):
-        self.__width = witdh
-
-    def set_height(self, height: int):
-        self.__height = height
-
-    def set_pos_x(self, pos_x: int):
-        self.__pos_x = pos_x
-
-    def set_pos_y(self, pos_y: int):
-        self.__pos_y = pos_y
+    def get_rect(self) -> Rect:
+        return self.__rect
+    
+    def set_rect(self, rect: Rect):
+        self.__rect = rect

@@ -1,10 +1,15 @@
 import pygame
 from pygame.locals import *
 from GameObject import GameObject
+from Player import Player
+from MovingObjects import MovingObjects
 
 class Match:
     def __init__(self):
-        self.__game_objects: list[GameObject] = []
+        self.__game_objects: list[GameObject] = [
+            Player(20, 20, 0, 0, 5, 5, 0),
+            Player(20, 20, 40, 0, 5, 5, 1)
+        ]
         self.__cenario = None
         self.__time: int = 0
 
@@ -16,11 +21,16 @@ class Match:
         pass
     
     def process_input(self, events):
-        pass
-
-    def draw(self):
         for obj in self.__game_objects:
-            obj.draw()
+            if isinstance(obj, MovingObjects):
+                obj.move(events)
+
+    def draw(self, pg: pygame, surface: pygame.Surface):
+        surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
+                                #to do - implement cenario
+
+        for obj in self.__game_objects:
+            obj.draw(pg, surface)
 
         self.draw_score()
 

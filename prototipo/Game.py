@@ -1,11 +1,12 @@
 import pygame
 from pygame.locals import *
 import sys
+from Match import Match
 
 class Game:
-    def __init__(self, config, match): 
+    def __init__(self, config): 
         self.__config = config
-        self.__match = match
+        self.__match = Match()
         self.__screen = pygame.display.set_mode((150, 50))  #essa informação deve vir de config
         self.__background = pygame.Surface(self.__screen.get_size())
         self.__running = False
@@ -37,7 +38,7 @@ class Game:
         self.__match.process_input(events)
 
     def draw_frame(self):
-        self.__match.draw()
+        self.__match.draw(pygame, self.__screen)
 
     def render(self):
         pygame.display.flip()
