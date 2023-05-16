@@ -36,13 +36,14 @@ class Player(Character):
         for event in events:
             if event.type == KEYDOWN:
                 if event.key == controller["UP"]:
-                    pos_y = pos_y - speed_y
-                if event.key == controller["DOWN"]:
-                    pos_y = pos_y + speed_y
+                    if pos_y > 0:
+                        pos_y = pos_y - speed_y
                 if event.key == controller["LEFT"]:
-                    pos_x = pos_x - speed_x
+                    if pos_x > 0:
+                        pos_x = pos_x - speed_x
                 if event.key == controller["RIGHT"]:
-                    pos_x = pos_x + speed_x
+                    if pos_x < 620:
+                        pos_x = pos_x + speed_x
 
         new_rect = Rect(pos_x, pos_y, self.get_rect().width,
                         self.get_rect().height)

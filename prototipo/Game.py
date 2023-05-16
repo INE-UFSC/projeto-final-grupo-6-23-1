@@ -7,10 +7,10 @@ class Game:
     def __init__(self, config): 
         self.__config = config
         self.__match = Match()
-        self.__screen = pygame.display.set_mode((150, 50))  #essa informação deve vir de config
+        self.__screen = pygame.display.set_mode((640, 360))  #essa informação deve vir de config
         self.__background = pygame.Surface(self.__screen.get_size())
         self.__running = False
-        self.__fps: int = 60
+        self.__fps: int = 1
 
     def start_game(self):
         pygame.init()
