@@ -3,6 +3,7 @@ from pygame.locals import *
 import sys
 from Match import Match
 
+
 class Game:
     def __init__(self, config): 
         self.__config = config
@@ -36,7 +37,7 @@ class Game:
                 self.__running = False
 
         return events
-    
+
     def process_input(self, events):
         self.__match.process_input(events, self.__screen)
 
