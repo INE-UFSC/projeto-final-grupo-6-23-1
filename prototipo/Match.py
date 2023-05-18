@@ -39,11 +39,11 @@ class Match:
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
                                 #to do - implement cenario
-        """ if self.__cenario == 'test':
+        if self.__cenario == 'test':
             background = pygame.image.load('sprites/stages/test/background.png')
             ground = pygame.image.load('sprites/stages/test/ground.png')
         surface.blit(background, (0,0))
-        surface.blit(ground, (0,288)) """
+        surface.blit(ground, (0,288))
 
         for obj in self.__game_objects:
             obj.draw(pg, surface)
