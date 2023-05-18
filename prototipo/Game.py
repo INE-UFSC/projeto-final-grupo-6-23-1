@@ -12,31 +12,34 @@ class Game:
         pygame.display.set_caption('Goal Masters')
         self.__background = pygame.Surface(self.__screen.get_size())
         self.__running = False
+        self.__fps: int = 60
+        self.__timer = pygame.time.Clock()
 
     def start_game(self):
         pygame.init()
         self.__running = True
-        fps = pygame.time.Clock()
-        fps.tick(60)
         self.loop()
 
     def loop(self):
         while self.__running:
+            self.__timer.tick(self.__fps)
             events = self.handle_events()
             self.process_input(events)
             self.draw_frame()
             self.render()
 
+        self.quit()
+
     def handle_events(self):
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
-                self.quit()
+                self.__running = False
 
         return events
 
     def process_input(self, events):
-        self.__match.process_input(events)
+        self.__match.process_input(events, self.__screen)
 
     def draw_frame(self):
         self.__match.draw(pygame, self.__screen)
@@ -45,7 +48,6 @@ class Game:
         pygame.display.flip()
 
     def quit(self):
-        self.__running = False
         pygame.quit()
         sys.exit()
 
