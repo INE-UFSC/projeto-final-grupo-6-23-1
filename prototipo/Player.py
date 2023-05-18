@@ -25,7 +25,7 @@ class Player(Character):
             },
         ]
 
-    def move(self, events: event, screen):
+    def move(self, events: event, **args):
         controller = self.__controllers[self.__controller]
 
         pos_x = self.get_pos_x()
@@ -44,6 +44,11 @@ class Player(Character):
                 if event.key == controller["RIGHT"]:
                     if pos_x < 620:
                         pos_x = pos_x + speed_x
+
+        if pos_y < 340:
+            pos_y = pos_y + speed_y
+        else:
+            pos_y = 340
 
         new_rect = Rect(pos_x, pos_y, self.get_rect().width,
                         self.get_rect().height)
