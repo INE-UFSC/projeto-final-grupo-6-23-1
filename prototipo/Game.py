@@ -50,6 +50,3 @@ class Game:
 
     def show_menu(self):
         pass
-    
-    def end_game(self):
-        pass

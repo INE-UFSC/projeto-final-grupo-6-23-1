@@ -10,9 +10,8 @@ class Match:
         self.__game_objects: list[GameObject] = [
             Player(20, 20, 0, 0, 5, 5, 0),
             Player(20, 20, 80, 0, 5, 5, 1),
-            Ball(20, 20, 40, 340, 5, 5)
         ]
-        self.__cenario = None
+        self.__cenario:str = 'test'
         self.__time: int = 0
 
     def check_collisions(self):
@@ -31,6 +30,11 @@ class Match:
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
                                 #to do - implement cenario
+        if self.__cenario == 'test':
+            background = pygame.image.load('sprites/stages/test/background.png')
+            ground = pygame.image.load('sprites/stages/test/ground.png')
+        surface.blit(background, (0,0))
+        surface.blit(ground, (0,288))
 
         for obj in self.__game_objects:
             obj.draw(pg, surface)

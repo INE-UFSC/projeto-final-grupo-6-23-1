@@ -45,10 +45,10 @@ class Player(Character):
                     if pos_x < 620:
                         pos_x = pos_x + speed_x
 
-        if pos_y < 340:
+        if pos_y < 268:
             pos_y = pos_y + speed_y
         else:
-            pos_y = 340
+            pos_y = 268
 
         new_rect = Rect(pos_x, pos_y, self.get_rect().width,
                         self.get_rect().height)
