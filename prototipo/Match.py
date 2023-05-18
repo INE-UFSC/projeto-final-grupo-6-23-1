@@ -21,7 +21,10 @@ class Match:
             game_obj.check_collisions(self.__game_objects) """
 
     def draw_score(self):
-        pass
+        self.update_time()
+        font = pygame.font.Font(None, 40)
+        text = font.render(str(self.__time), False, 'White')
+        return text
     
     def process_input(self, events, screen):
         for obj in self.__game_objects:
@@ -45,7 +48,7 @@ class Match:
         for obj in self.__game_objects:
             obj.draw(pg, surface)
 
-        self.draw_score()
+        surface.blit(self.draw_score(), (300,5))
 
     def check_goal(self):
         #can be implemented with custom event, ex
@@ -61,5 +64,5 @@ class Match:
         """
         pass
 
-    def update_time():
+    def update_time(self):
         pass
