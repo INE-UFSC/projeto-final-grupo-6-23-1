@@ -8,8 +8,8 @@ from MovingObjects import MovingObjects
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(20, 20, 0, 340, 5, 5, 0),
-            Player(20, 20, 80, 340, 5, 5, 1),
+            Player(20, 20, 0, 0, 5, 5, 0),
+            Player(20, 20, 80, 0, 5, 5, 1),
             Ball(20, 20, 40, 340, 5, 5)
         ]
         self.__cenario = None

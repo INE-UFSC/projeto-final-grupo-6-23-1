@@ -8,15 +8,15 @@ class Game:
         self.__config = config
         self.__match = Match()
         self.__screen = pygame.display.set_mode((640, 360))  #essa informação deve vir de config
+        pygame.display.set_caption('Goal Masters')
         self.__background = pygame.Surface(self.__screen.get_size())
         self.__running = False
-        self.__fps: int = 1
 
     def start_game(self):
         pygame.init()
         self.__running = True
         fps = pygame.time.Clock()
-        fps.tick(self.__fps)
+        fps.tick(60)
         self.loop()
 
     def loop(self):
