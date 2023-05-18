@@ -50,8 +50,7 @@ class Player(Character):
         else:
             pos_y = 268
 
-        new_rect = Rect(pos_x, pos_y, self.get_rect().width,
-                        self.get_rect().height)
+        new_rect = Rect(pos_x, pos_y, self.get_rect().width, self.get_rect().height)
         self.set_rect(new_rect)
 
     def draw(self, pg: pygame, surface: pygame.Surface):
