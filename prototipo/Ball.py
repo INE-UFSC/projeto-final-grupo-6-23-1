@@ -10,7 +10,7 @@ class Ball(MovingObjects):
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y)
         self.__radius = radius
         self.__retention = 0.7 # variable that retains ball momentum when bouncing
-        self.__friction = 0.98 # ball friction against soil
+        self.__friction = 0.7 # ball friction against soil
 
     def handle_gravity(self, height, gravity):
         stop_bounce = 4 #value choosen by tests, subject to change
@@ -29,15 +29,17 @@ class Ball(MovingObjects):
             if isinstance(obj, Player):
                 self.handle_player_collision(obj)
 
-        self.handle_friction(height)
-        self.handle_gravity(height, gravity)
+        #288 should be height parameter
+        self.handle_friction(288)
+        self.handle_gravity(288, gravity)
         self.handle_x_collision(width)
 
     def handle_friction(self, height):
         stop_rotating = 0.3
+
         if self.get_speed_y() == 0 and abs(self.get_speed_x()) < stop_rotating:
             self.set_speed_x(0)
-        elif self.get_pos_y() + self.__radius == height:
+        elif self.get_pos_y() + self.__radius >= height:
             self.set_speed_x(self.get_speed_x() * self.__friction)
 
     def handle_x_collision(self, width):
@@ -62,8 +64,11 @@ class Ball(MovingObjects):
         #when bouncing against a player it should have some speed added to it based on the player's speed
         #some speed limit should be added, in order to avoid the ball bouncing like crazy
         if is_colliding:
-            self.set_speed_x(speed_x * -1)
-            self.set_speed_y(speed_y * -1)
+            if speed_x < 1: #subject to change to interact with kicks
+                self.set_speed_x(speed_x * -1 + player.get_speed_x() * 0.8)
+            else:
+                self.set_speed_x(speed_x * -1)
+                self.set_speed_y(speed_y * -1)
 
     def update_pos(self):
         new_rect = Rect(self.get_pos_x() + self.get_speed_x(), 
