@@ -9,9 +9,9 @@ from MovingObjects import MovingObjects
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(20, 20, 0, 0, 5, 5, 0),
-            Player(20, 20, 80, 0, 5, 5, 1),
-            Ball(20, 20, 40, 0, 20, 0, 20)
+            Player(20, 20, 270, 0, 5, 5, 0),
+            Player(20, 20, 350, 0, 5, 5, 1),
+            Ball(20, 20, 310, 0, 0, 0, 20)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 0
@@ -80,17 +80,19 @@ class Match:
     def update_score(self):
         for obj in self.__game_objects:
             if isinstance(obj, Ball):
-                if obj.get_pos_x() <= 30:
-                    self.__game_objects[0].add_goals()
-                    self.reset()
-                elif obj.get_pos_x() >= 610:
-                    self.__game_objects[1].add_goals()
-                    self.reset()
+                if obj.get_pos_y() < 288 and obj.get_pos_y() > 144:
+                    if obj.get_pos_x() <= 128:
+                        self.__game_objects[0].add_goals()
+                        self.reset()
+                    elif obj.get_pos_x() >= 532:
+                        self.__game_objects[1].add_goals()
+                        self.reset()
 
         score_player1 = self.__game_objects[0].get_goals()
         score_player2 = self.__game_objects[1].get_goals()
         return [score_player1, score_player2]
     
     def reset(self):
-        for obj in self.__game_objects:
-            obj.set_pos(320,200)
+        self.__game_objects[0].set_pos(270, 0)
+        self.__game_objects[1].set_pos(350, 0)
+        self.__game_objects[2].set_pos(310, 0)
