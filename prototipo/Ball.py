@@ -6,8 +6,8 @@ from pygame import Rect, event
 from pygame.locals import *
 
 class Ball(MovingObjects):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, radius: int):
-        super().__init__(width, height, pos_x, pos_y, speed_x, speed_y)
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass: float, radius: int):
+        super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass)
         self.__radius = radius
         self.__retention = 0.7 # variable that retains ball momentum when bouncing
         self.__friction = 0.7 # ball friction against soil

@@ -8,9 +8,9 @@ from MovingObjects import MovingObjects
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(20, 20, 0, 0, 5, 5, 0),
-            Player(20, 20, 80, 0, 5, 5, 1),
-            Ball(20, 20, 40, 0, 20, 0, 20)
+            Player(20, 20, 0, 0, 0, 0, 50, 0),
+            Player(20, 20, 80, 0, 0, 0, 50, 1),
+            Ball(20, 20, 40, 0, 20, 0, 1.5, 20)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 0
