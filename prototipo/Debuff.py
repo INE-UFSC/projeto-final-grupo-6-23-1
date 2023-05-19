@@ -1,11 +1,12 @@
 import random
+import pygame
 from pygame import Rect
 from Collectables import Collectables
 from GameObject import GameObject
 from Goalpost import Goalpost
 from Ball import Ball
 from Player import Player
-
+DEBUFF_APPLIED = pygame.USEREVENT + 1
 class Debuff(Collectables):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
         super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
@@ -39,12 +40,13 @@ class Debuff(Collectables):
         debuffs = ['size_down']
         return random.choice(debuffs)
 
-    def apply_debuff(self, game_obj: GameObject):
+    def apply_debuff(self):
         if self.get_type == 'size_down':
-            self.size_down(list[GameObject],Goalpost)
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, object = Goalpost))
+            
 
-    def size_down(self,object: list[GameObject],obj_type):
+    """ def size_down(self,object: list[GameObject],obj_type):
         for obj in object:
             if isinstance(obj,obj_type):
-                obj.set_height(obj.get_height() - (obj.get_height ()* 0.5))
+                obj.set_height(obj.get_height() - (obj.get_height ()* 0.5))"""
         
