@@ -1,4 +1,6 @@
 from pygame import Rect
+import pygame
+
 
 class GameObject:
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
