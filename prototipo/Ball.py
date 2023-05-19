@@ -92,3 +92,8 @@ class Ball(MovingObjects):
     
     def set_radius(self, radius):
         self.__radius = radius
+
+    def set_pos(self, pos_x: int, pos_y: int):
+        super().set_pos(pos_x, pos_y)
+        self.set_speed_x(0)
+        self.set_speed_y(0)
