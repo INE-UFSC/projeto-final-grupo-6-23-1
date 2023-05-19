@@ -14,7 +14,7 @@ class Match:
             Ball(20, 20, 310, 0, 0, 0, 20)
         ]
         self.__cenario:str = 'test'
-        self.__time: int = 0
+        self.__time: int = 180
         self.__gravity = 0.7
 
     """ def check_collisions(self):
@@ -22,9 +22,11 @@ class Match:
             game_obj.check_collisions(self.__game_objects) """
 
     def draw_time(self):
-        self.update_time()
         font = pygame.font.Font(None, 40)
-        text = font.render(str(self.__time), False, 'White')
+        if self.__time >= 0:
+            text = font.render(str(self.__time), False, 'White')
+        else:
+            text = font.render('Time Up!', False, 'White')
         return text
 
     def draw_score(self):
@@ -47,8 +49,8 @@ class Match:
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
         if self.__cenario == 'test': #to do - implement cenario
-            background = pygame.image.load('sprites/stages/test/background.png')
-            ground = pygame.image.load('sprites/stages/test/ground.png')
+            background = pygame.image.load('prototipo/sprites/stages/test/background.png')
+            ground = pygame.image.load('prototipo/sprites/stages/test/ground.png')
         surface.blit(background, (0,0))
         surface.blit(ground, (0,288))
 
@@ -74,8 +76,10 @@ class Match:
         """
         pass
 
-    def update_time(self):
-        pass
+    def update_time(self, events):
+        for event in events:
+            if event.type == pygame.USEREVENT:
+                self.__time -= 1
 
     def update_score(self):
         for obj in self.__game_objects:
