@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from GameObject import GameObject
 from Ball import Ball
 from Goalpost import Goalpost
-class Collectables(GameObject,ABC,pygame.sprite.Sprite):
+from pygame import Rect
+class Collectables(GameObject,ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
         super().__init__(width, height, pos_x, pos_y)
         self.duration = duration
@@ -12,7 +13,7 @@ class Collectables(GameObject,ABC,pygame.sprite.Sprite):
     #Check if the player or ball collide with the collectable. 
     def check_collision(self, objects: list[GameObject]):
         for obj in objects:
-            if isinstance(obj, Ball) and self.get_rect().colliderect(obj.get_rect()):
+            if isinstance(obj, Ball) and Rect.colliderect(obj.get_rect(), self.get_rect()):
                 """for game_obj in objects:
                     if isinstance(game_obj, Goalpost) and game_obj.get_player() != obj.get_last_touched_player(): 
                         current_height = game_obj.get_height()
