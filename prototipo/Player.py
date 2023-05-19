@@ -25,7 +25,7 @@ class Player(Character):
             },
         ]
 
-    def move(self, events: event):
+    def move(self, events: event, **args):
         controller = self.__controllers[self.__controller]
 
         pos_x = self.get_pos_x()

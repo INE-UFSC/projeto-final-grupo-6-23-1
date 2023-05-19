@@ -1,4 +1,6 @@
 from pygame import Rect
+import pygame
+
 
 class GameObject:
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
@@ -17,6 +19,10 @@ class GameObject:
     def get_pos_y(self) -> int:
         return self.__rect.y
     
+    def set_pos(self, pos_x: int, pos_y: int):
+        self.__rect.x = pos_x
+        self.__rect.y = pos_y
+
     def get_rect(self) -> Rect:
         return self.__rect
     
