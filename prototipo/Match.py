@@ -11,13 +11,12 @@ from Debuff import Debuff
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(20, 20, 0, 0, 5, 5, 0),
-            Player(20, 20, 80, 0, 5, 5, 1),
-            Ball(20, 20, 40, 0, 0, 0, 20),
-            Debuff(10,10,80,268, 5)
+            Player(20, 20, 0, 0, 0, 0, 50, 0),
+            Player(20, 20, 80, 0, 0, 0, 50, 1),
+            Ball(20, 20, 40, 0, 20, 0, 1.5, 20)
         ]
         self.__cenario:str = 'test'
-        self.__time: int = 0
+        self.__time: int = 180
         self.__gravity = 0.7
 
     """ def check_collisions(self):
@@ -25,9 +24,11 @@ class Match:
             game_obj.check_collisions(self.__game_objects) """
 
     def draw_time(self):
-        self.update_time()
         font = pygame.font.Font(None, 40)
-        text = font.render(str(self.__time), False, 'White')
+        if self.__time >= 0:
+            text = font.render(str(self.__time), False, 'White')
+        else:
+            text = font.render('Time Up!', False, 'White')
         return text
 
     def draw_score(self):
@@ -84,23 +85,27 @@ class Match:
         """
         pass
 
-    def update_time(self):
-        pass
+    def update_time(self, events):
+        for event in events:
+            if event.type == pygame.USEREVENT:
+                self.__time -= 1
 
     def update_score(self):
         for obj in self.__game_objects:
             if isinstance(obj, Ball):
-                if obj.get_pos_x() <= 30:
-                    self.__game_objects[0].add_goals()
-                    self.reset()
-                elif obj.get_pos_x() >= 610:
-                    self.__game_objects[1].add_goals()
-                    self.reset()
+                if obj.get_pos_y() < 288 and obj.get_pos_y() > 144:
+                    if obj.get_pos_x() <= 128:
+                        self.__game_objects[0].add_goals()
+                        self.reset()
+                    elif obj.get_pos_x() >= 532:
+                        self.__game_objects[1].add_goals()
+                        self.reset()
 
         score_player1 = self.__game_objects[0].get_goals()
         score_player2 = self.__game_objects[1].get_goals()
         return [score_player1, score_player2]
     
     def reset(self):
-        for obj in self.__game_objects:
-            obj.set_pos(320,200)
+        self.__game_objects[0].set_pos(270, 0)
+        self.__game_objects[1].set_pos(350, 0)
+        self.__game_objects[2].set_pos(310, 0)
