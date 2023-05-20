@@ -4,7 +4,9 @@ from GameObject import GameObject
 from Player import Player
 from Ball import Ball
 from MovingObjects import MovingObjects
-
+from Collectables import Collectables
+from Buff import Buff
+from Debuff import Debuff
 
 class Match:
     def __init__(self):
@@ -45,6 +47,10 @@ class Match:
                     game_objects= self.__game_objects, 
                     gravity= self.__gravity
                 )
+            elif isinstance(obj, Collectables):
+                obj.check_collision(self.__game_objects)
+
+            obj.handle_events(events)
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
@@ -54,6 +60,9 @@ class Match:
         surface.blit(background, (0,0))
         surface.blit(ground, (0,288))
 
+        print("---------------")
+        print(len(self.__game_objects))
+        print(self.__game_objects)
         for obj in self.__game_objects:
             obj.draw(pg, surface)
 

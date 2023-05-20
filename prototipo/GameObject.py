@@ -1,8 +1,8 @@
 from pygame import Rect
 import pygame
+from abc import ABC,abstractmethod
 
-
-class GameObject:
+class GameObject(ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
         self.__rect = Rect(pos_x, pos_y, width, height)
 
@@ -28,3 +28,7 @@ class GameObject:
     
     def set_rect(self, rect: Rect):
         self.__rect = rect
+    
+    @abstractmethod
+    def handle_events(self):
+        pass
