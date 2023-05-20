@@ -92,3 +92,6 @@ class Ball(MovingObjects):
     
     def set_radius(self, radius):
         self.__radius = radius
+    
+    def handle_events(self,events):
+        pass

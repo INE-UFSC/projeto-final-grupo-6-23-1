@@ -4,14 +4,17 @@ from GameObject import GameObject
 from Player import Player
 from Ball import Ball
 from MovingObjects import MovingObjects
-
+from Collectables import Collectables
+from Buff import Buff
+from Debuff import Debuff
 
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
             Player(20, 20, 0, 0, 5, 5, 0),
             Player(20, 20, 80, 0, 5, 5, 1),
-            Ball(20, 20, 40, 0, 20, 0, 20)
+            Ball(20, 20, 40, 0, 0, 0, 20),
+            Debuff(10,10,80,268, 5)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 0
@@ -43,15 +46,22 @@ class Match:
                     game_objects= self.__game_objects, 
                     gravity= self.__gravity
                 )
+            elif isinstance(obj, Collectables):
+                obj.check_collision(self.__game_objects)
+
+            obj.handle_events(events)
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
         if self.__cenario == 'test': #to do - implement cenario
-            background = pygame.image.load('sprites/stages/test/background.png')
-            ground = pygame.image.load('sprites/stages/test/ground.png')
+            background = pygame.image.load('prototipo/sprites/stages/test/background.png')
+            ground = pygame.image.load('prototipo/sprites/stages/test/ground.png')
         surface.blit(background, (0,0))
         surface.blit(ground, (0,288))
 
+        print("---------------")
+        print(len(self.__game_objects))
+        print(self.__game_objects)
         for obj in self.__game_objects:
             obj.draw(pg, surface)
 

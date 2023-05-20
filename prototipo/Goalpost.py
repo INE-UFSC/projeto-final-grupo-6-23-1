@@ -2,8 +2,8 @@ from GameObject import GameObject
 from Ball import Ball
 from pygame import event
 import pygame
-BUFF_APPLIED = pygame.USEREVENT + 1
-DEBUFF_APPLIED = pygame.USEREVENT + 1
+from utils import BUFF_APPLIED, DEBUFF_APPLIED
+
 class Goalpost(GameObject):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
         super().__init__(width, height, pos_x, pos_y)
@@ -15,10 +15,10 @@ class Goalpost(GameObject):
         else:
             return False
     
-    def handle_event(self,events: event):
+    def handle_events(self,events: event):
         for event in events:
-            if event.type == BUFF_APPLIED and event.object == self:
+            if event.type == BUFF_APPLIED:
                 self.set_height(self.get_height() * 1.5)
         
-            elif event.type == DEBUFF_APPLIED and event.object == self:
+            elif event.type == DEBUFF_APPLIED:
                 self.set_height(self.get_height() - (self.get_height() * 0.5))

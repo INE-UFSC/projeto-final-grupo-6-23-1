@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from GameObject import GameObject
-class Collectables(GameObject,ABC):
-    def _init_(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
-        super()._init_(width, height, pos_x, pos_y)
+class Collectables(GameObject, ABC):
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
+        super().__init__(width, height, pos_x, pos_y)
         self.duration = duration
         self.type = type
 
