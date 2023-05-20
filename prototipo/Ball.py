@@ -29,10 +29,25 @@ class Ball(MovingObjects):
             if isinstance(obj, Player):
                 self.handle_player_collision(obj)
 
-        #288 should be height parameter
-        self.handle_friction(288)
-        self.handle_gravity(288, gravity)
-        self.handle_x_collision(width)
+        self.collision_with_screen(width, height)
+
+    def collision_with_screen(self, width, height):
+        ball = self.get_rect()
+        speed_x = self.get_speed_x()
+        speed_y = self.get_speed_y()
+        
+        if ball.right >= width and speed_x > 0:
+            ball.right = width
+            self.set_speed_x(speed_x * -1)
+        elif ball.left <= 0 and speed_x < 0:
+            ball.left = 0
+            self.set_speed_x(speed_x * -1)
+        elif ball.bottom >= height and speed_y >= 0:
+            ball.bottom = height
+            self.set_speed_y(speed_y * -1)
+        elif ball.top <= 0 and speed_y < 0:
+            ball.top = 0
+            self.set_speed_y(speed_y * -1)
 
     def handle_friction(self, height):
         stop_rotating = 0.3
@@ -54,21 +69,40 @@ class Ball(MovingObjects):
         elif self.get_pos_x() + self.__radius < 0 and speed_x < 0:
             self.set_speed_x((speed_x) * -1)
 
-    def handle_player_collision(self, player: Player):
-        is_colliding = Rect.colliderect(self.get_rect(), player.get_rect())
+    def calc_final_velocity(self, ball_speed, player_speed):
+        delta_t = 0.1 # collision time
+        ball_mass = self.get_mass()
+        ball_a = (ball_speed + player_speed) / delta_t
+        f_ball = ball_mass * ball_a
+        fv_ball = ((f_ball * delta_t) + (ball_mass * ball_speed))/ball_mass
 
+        return fv_ball
+
+    def handle_player_collision(self, player: Player):
+        ball = self.get_rect()
+        player_rect = player.get_rect()
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
 
-        #improvements:
-        #when bouncing against a player it should have some speed added to it based on the player's speed
-        #some speed limit should be added, in order to avoid the ball bouncing like crazy
+        is_colliding = Rect.colliderect(player_rect, ball)
+        collision_tolerance = 20
+        
+        fv_ball_y = self.calc_final_velocity(speed_y, player.get_speed_y())
+        fv_ball_x = self.calc_final_velocity(speed_x, player.get_speed_x())
+
         if is_colliding:
-            if speed_x < 1: #subject to change to interact with kicks
-                self.set_speed_x(speed_x * -1 + player.get_speed_x() * 0.8)
-            else:
-                self.set_speed_x(speed_x * -1)
-                self.set_speed_y(speed_y * -1)
+            if abs(ball.top - player_rect.bottom) <= collision_tolerance:
+                ball.top = player_rect.bottom
+                self.set_speed_y(fv_ball_y)
+            if abs(ball.right - player_rect.left) <= collision_tolerance:
+                ball.right = player_rect.left
+                self.set_speed_x(fv_ball_x)
+            if abs(ball.bottom - player_rect.top) <= collision_tolerance:
+                ball.bottom = player_rect.top
+                self.set_speed_y(fv_ball_y)
+            if abs(ball.left - player_rect.right) <= collision_tolerance:
+                ball.left = player_rect.right
+                self.set_speed_x(fv_ball_x)
 
     def update_pos(self):
         new_rect = Rect(self.get_pos_x() + self.get_speed_x(), 
@@ -81,6 +115,9 @@ class Ball(MovingObjects):
     def move(self, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
         width = screen.get_width()
         height =  screen.get_height()
+
+        self.handle_friction(height)
+        self.handle_gravity(height, gravity)
         self.check_collisions(width, height, game_objects, gravity)
         self.update_pos()
 
