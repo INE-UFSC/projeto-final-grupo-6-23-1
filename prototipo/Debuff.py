@@ -12,7 +12,6 @@ class Debuff(Collectables):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
         super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
 
-    
     def check_collision(self, objects: list[GameObject]):
         collided = False
 
@@ -36,6 +35,8 @@ class Debuff(Collectables):
 
         return False
     
+    """def update(self):
+        pass"""
     #Generate a random debuff for the match
     def gen_rand_debuff(self) -> str:
         debuffs = ['size_down']
@@ -49,11 +50,6 @@ class Debuff(Collectables):
         pass
 
     def draw(self, pg: pygame, surface: pygame.Surface):
-        print("to aqui")
-        pg.draw.rect(surface, (0, 255, 0), self.get_rect())
+        pg.draw.rect(surface, (255, 0, 0), self.get_rect())
 
-    """ def size_down(self,object: list[GameObject],obj_type):
-        for obj in object:
-            if isinstance(obj,obj_type):
-                obj.set_height(obj.get_height() - (obj.get_height ()* 0.5))"""
         

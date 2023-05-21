@@ -11,6 +11,7 @@ class Ball(MovingObjects):
         self.__radius = radius
         self.__retention = 0.7 # variable that retains ball momentum when bouncing
         self.__friction = 0.7 # ball friction against soil
+        self.last_touched_player = None
 
     def handle_gravity(self, height, gravity):
         stop_bounce = 4 #value choosen by tests, subject to change
@@ -103,7 +104,7 @@ class Ball(MovingObjects):
             if abs(ball.left - player_rect.right) <= collision_tolerance:
                 ball.left = player_rect.right
                 self.set_speed_x(fv_ball_x)
-
+            self.last_touched_player = player
     def update_pos(self):
         new_rect = Rect(self.get_pos_x() + self.get_speed_x(), 
                         self.get_pos_y() + self.get_speed_y(), 

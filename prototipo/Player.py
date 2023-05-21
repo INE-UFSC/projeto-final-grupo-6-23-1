@@ -12,6 +12,7 @@ class Player(Character):
         self.__controller = controller
         self.__default_speed = 10
         self.__default_jump_speed = 20
+
         # maybe create an object?
         self.__controllers = [
             {
@@ -27,7 +28,8 @@ class Player(Character):
                 "RIGHT": pygame.K_d
             },
         ]
-
+        self.__is_buffed = False
+        self.__is_debuffed = False
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
         for obj in game_objects:
             if isinstance(obj, Player) and obj != self:
@@ -120,11 +122,14 @@ class Player(Character):
 
     def handle_events(self, events: event):
         for event in events:
-            if event.type == BUFF_APPLIED:
+            if event.type == BUFF_APPLIED and not self.__is_buffed:
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height) * 1.5)
                 self.set_rect(new_rect_applied)
+                self.__is_buffed = True
         
-            elif event.type == DEBUFF_APPLIED:
+            elif event.type == DEBUFF_APPLIED and not self.__is_debuffed:
                 player_min = self.get_rect().height * 0.5
-                new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height + player_min)
+                new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min)
                 self.set_rect(new_rect_debuff)
+                self.__is_debuffed = True
+       

@@ -7,17 +7,23 @@ from MovingObjects import MovingObjects
 from Collectables import Collectables
 from Buff import Buff
 from Debuff import Debuff
+from Goalpost import Goalpost
 
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
             Player(20, 20, 0, 0, 0, 0, 50, 0),
-            Player(20, 20, 80, 0, 0, 0, 50, 1),
-            Ball(20, 20, 40, 0, 20, 0, 1.5, 20)
+            Player(20, 20, 80, 170, 0, 0, 50, 1),
+            Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
+            Debuff(20,20, 50, 50, 5),
+            Buff(20,20,400,50,5),
+            Goalpost(60,120,0,170),
+            Goalpost(60,120,580,170)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 180
         self.__gravity = 0.7
+        #self.__collectable_timer = 10
 
     """ def check_collisions(self):
         for game_obj in self.__game_objects:
@@ -51,6 +57,16 @@ class Match:
                 obj.check_collision(self.__game_objects)
 
             obj.handle_events(events)
+    
+    """def update(self):
+        for obj in self.__game_objects:
+            obj.update()
+            if isinstance(obj, Buff) or isinstance(obj, Debuff):
+                if obj.start_time is not None:
+                    elapsed_time = pygame.time.get_ticks() - obj.start_time
+                    if elapsed_time >= self.__collectable_timer  * 1000:
+                        obj.remove_buff()
+                        self.__game_objects.remove(obj)"""
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
@@ -60,9 +76,9 @@ class Match:
         surface.blit(background, (0,0))
         surface.blit(ground, (0,288))
 
-        print("---------------")
-        print(len(self.__game_objects))
-        print(self.__game_objects)
+       # print("---------------")
+        #print(len(self.__game_objects))
+        #print(self.__game_objects)
         for obj in self.__game_objects:
             obj.draw(pg, surface)
 
