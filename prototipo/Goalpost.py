@@ -30,11 +30,8 @@ class Goalpost(GameObject):
     def draw(self, pg: pygame, surface: pygame.Surface):
         pg.draw.rect(surface, (0, 0, 255), self.get_rect())
     
-    def check_collision(self,width,height, player: Player, objects: list[GameObject]):
+    def check_collision(self,width: int, height: int, player: Player, objects: list[GameObject]):
         for obj in objects:
             if isinstance(object,player):
                 player.collision_with_screen(obj)
-        player.collision_with_screen(width,height)
-
-
-              
+        player.collision_with_screen(width, height)

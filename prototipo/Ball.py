@@ -43,9 +43,9 @@ class Ball(MovingObjects):
         elif ball.left <= 0 and speed_x < 0:
             ball.left = 0
             self.set_speed_x(speed_x * -1)
-        elif ball.bottom >= height and speed_y >= 0:
-            ball.bottom = height
-            self.set_speed_y(speed_y * -1)
+        elif ball.bottom >= height-72 and speed_y >= 0:
+            ball.bottom = height-72
+            self.set_speed_y(speed_y * -0.75)
         elif ball.top <= 0 and speed_y < 0:
             ball.top = 0
             self.set_speed_y(speed_y * -1)

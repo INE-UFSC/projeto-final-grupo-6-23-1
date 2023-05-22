@@ -8,6 +8,7 @@ from Collectables import Collectables
 from Buff import Buff
 from Debuff import Debuff
 from Goalpost import Goalpost
+from Ground import Ground
 
 class Match:
     def __init__(self):
@@ -18,7 +19,8 @@ class Match:
             Debuff(20,20, 50, 50, 5),
             Buff(20,20,400,50,5),
             Goalpost(60,120,0,170),
-            Goalpost(60,120,580,170)
+            Goalpost(60,120,580,170),
+            Ground(640, 72, 0, 288)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 180
@@ -35,6 +37,7 @@ class Match:
             text = font.render(str(self.__time), False, 'White')
         else:
             text = font.render('Time Up!', False, 'White')
+            pygame.quit()
         return text
 
     def draw_score(self):
@@ -80,12 +83,19 @@ class Match:
         #print(len(self.__game_objects))
         #print(self.__game_objects)
         for obj in self.__game_objects:
-            obj.draw(pg, surface)
+            if isinstance(obj, Player):
+                if self.__game_objects.index(obj) == 0:
+                    obj.draw(pg, surface, 0, 255 , 255)
+                else:
+                    obj.draw(pg, surface, 255, 255 , 0)
+            else:
+                obj.draw(pg, surface)
+
 
         surface.blit(self.draw_time(), (300,5))
 
         surface.blit(self.draw_score()[0], (0, 5))
-        surface.blit(self.draw_score()[1], (0, 60))
+        surface.blit(self.draw_score()[1], (620, 5))
 
     def check_goal(self):
         #can be implemented with custom event, ex

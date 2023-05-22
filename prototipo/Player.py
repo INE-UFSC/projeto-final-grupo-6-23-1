@@ -48,8 +48,8 @@ class Player(Character):
         elif player.left <= 0 and speed_x < 0:
             player.left = 0
             self.set_speed_x(0)
-        elif player.bottom >= height and speed_y >= 0:
-            player.bottom = height
+        elif player.bottom >= height-72 and speed_y >= 0:
+            player.bottom = height-72
             self.set_speed_y(0)
         elif player.top <= 0 and speed_y < 0:
             player.top = 0
@@ -117,8 +117,8 @@ class Player(Character):
         else:
             self.set_speed_y(0)
 
-    def draw(self, pg: pygame, surface: pygame.Surface):
-        pg.draw.rect(surface, (255, 0, 0), self.get_rect())
+    def draw(self, pg: pygame, surface: pygame.Surface, r: int, g: int, b: int):
+        pg.draw.rect(surface, (r, g, b), self.get_rect())
 
     def handle_events(self, events: event):
         for event in events:
