@@ -105,6 +105,10 @@ class Ball(MovingObjects):
                 ball.left = player_rect.right
                 self.set_speed_x(fv_ball_x)
             self.last_touched_player = player
+
+    def get_last_touched(self):
+        return self.last_touched_player
+    
     def update_pos(self):
         new_rect = Rect(self.get_pos_x() + self.get_speed_x(), 
                         self.get_pos_y() + self.get_speed_y(), 

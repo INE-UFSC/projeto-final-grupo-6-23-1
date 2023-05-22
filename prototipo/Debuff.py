@@ -6,7 +6,7 @@ from GameObject import GameObject
 from Goalpost import Goalpost
 from Ball import Ball
 from Player import Player
-from utils import DEBUFF_APPLIED
+from utils import DEBUFF_APPLIED, RESET_STATE
 
 class Debuff(Collectables):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
@@ -21,30 +21,29 @@ class Debuff(Collectables):
                     self.apply_debuff(obj)
                     collided = True
 
-                elif isinstance(obj, Player):
+                """ elif isinstance(obj, Player):
                     self.apply_debuff(obj)
                     collided = True
 
                 elif isinstance(obj, Goalpost):
                     self.apply_debuff(obj)
-                    collided = True
+                    collided = True """
 
                 if collided:
                     self.disappear(objects)
                     return True
 
         return False
-    
-    """def update(self):
-        pass"""
     #Generate a random debuff for the match
     def gen_rand_debuff(self) -> str:
-        debuffs = ['size_down']
+        debuffs = ['size_down_player']
         return random.choice(debuffs)
 
-    def apply_debuff(self, object):
-        if self.get_type() == 'size_down':
-            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = object))
+    def apply_debuff(self, obj: Ball):
+        if self.get_type() == 'size_down_player':
+            player = obj.get_last_touched()
+            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_player"), 10000,1)
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))
     
     def handle_events(self,events):
         pass

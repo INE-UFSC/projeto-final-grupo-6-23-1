@@ -2,7 +2,7 @@ from Character import Character
 from pygame import Rect, event
 import pygame
 from pygame.locals import *
-from utils import BUFF_APPLIED, DEBUFF_APPLIED
+from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE
 from GameObject import GameObject
 
 class Player(Character):
@@ -28,8 +28,6 @@ class Player(Character):
                 "RIGHT": pygame.K_d
             },
         ]
-        self.__is_buffed = False
-        self.__is_debuffed = False
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
         for obj in game_objects:
             if isinstance(obj, Player) and obj != self:
@@ -122,14 +120,20 @@ class Player(Character):
 
     def handle_events(self, events: event):
         for event in events:
-            if event.type == BUFF_APPLIED and not self.__is_buffed:
-                new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height) * 1.5)
+            if event.type == BUFF_APPLIED  and self == event.target:
+                new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height * 2))
                 self.set_rect(new_rect_applied)
-                self.__is_buffed = True
         
-            elif event.type == DEBUFF_APPLIED and not self.__is_debuffed:
+            elif event.type == DEBUFF_APPLIED  and self == event.target:
                 player_min = self.get_rect().height * 0.5
-                new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min)
+                new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
-                self.__is_debuffed = True
-       
+
+            if event.type == RESET_STATE and self == event.target:
+                if event.collectable_type == 'size_up_player':
+                   event.target.get_rect().height *= 0.5 
+                
+                elif event.collectable_type == 'size_down_player':
+                    event.target.get_rect().height *=2
+                
+                
