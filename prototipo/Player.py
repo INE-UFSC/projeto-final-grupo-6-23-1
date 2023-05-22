@@ -122,12 +122,12 @@ class Player(Character):
 
     def handle_events(self, events: event):
         for event in events:
-            if event.type == BUFF_APPLIED and not self.__is_buffed:
+            if event.type == BUFF_APPLIED and not self.__is_buffed and self == event.target:
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height) * 1.5)
                 self.set_rect(new_rect_applied)
                 self.__is_buffed = True
         
-            elif event.type == DEBUFF_APPLIED and not self.__is_debuffed:
+            elif event.type == DEBUFF_APPLIED and not self.__is_debuffed and self == event.target:
                 player_min = self.get_rect().height * 0.5
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min)
                 self.set_rect(new_rect_debuff)
