@@ -20,7 +20,6 @@ class Match:
             Buff(20,20,400,50,10),
             Goalpost(60,120,0,170),
             Goalpost(60,120,580,170),
-            Ground(640, 72, 0, 288)
         ]
         self.__cenario:str = 'test'
         self.__time: int = 180
@@ -86,7 +85,7 @@ class Match:
         surface.blit(self.draw_time(), (300,5))
 
         surface.blit(self.draw_score()[0], (0, 5))
-        surface.blit(self.draw_score()[1], (620, 5))
+        surface.blit(self.draw_score()[1], (615, 5))
 
     def check_goal(self):
         #can be implemented with custom event, ex
@@ -120,6 +119,8 @@ class Match:
 
         score_player1 = self.__game_objects[0].get_goals()
         score_player2 = self.__game_objects[1].get_goals()
+        if score_player1==7 or score_player2==7:
+            pygame.quit()
         return [score_player1, score_player2]
     
     def reset(self):

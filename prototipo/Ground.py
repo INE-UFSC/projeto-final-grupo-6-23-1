@@ -16,7 +16,4 @@ class Ground(GameObject):
         pg.draw.rect(surface, (0, 255, 0), self.get_rect())
 
     def check_collision(self, width: int, height: int, player: Player, objects: list[GameObject]):
-        for obj in objects:
-            if isinstance(object,player):
-                player.collision_with_screen(obj)
-        player.collision_with_screen(width, height)
+        pass
