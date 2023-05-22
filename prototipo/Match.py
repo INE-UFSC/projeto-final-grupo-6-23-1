@@ -15,7 +15,7 @@ class Match:
             Player(20, 20, 0, 0, 0, 0, 50, 0),
             Player(20, 20, 80, 170, 0, 0, 50, 1),
             Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
-            Debuff(20,20, 50, 50, 10),
+            Debuff(20,20, 150, 50, 10),
             Buff(20,20,400,50,10),
             Goalpost(60,120,0,170),
             Goalpost(60,120,580,170)
@@ -58,15 +58,6 @@ class Match:
 
             obj.handle_events(events)
     
-    """def update(self):
-        for obj in self.__game_objects:
-            obj.update()
-            if isinstance(obj, Buff) or isinstance(obj, Debuff):
-                if obj.start_time is not None:
-                    elapsed_time = pygame.time.get_ticks() - obj.start_time
-                    if elapsed_time >= self.__collectable_timer  * 1000:
-                        obj.remove_buff()
-                        self.__game_objects.remove(obj)"""
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one

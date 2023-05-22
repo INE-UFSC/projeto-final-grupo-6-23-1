@@ -6,7 +6,7 @@ from GameObject import GameObject
 from Goalpost import Goalpost
 from Ball import Ball
 from Player import Player
-from utils import BUFF_APPLIED
+from utils import BUFF_APPLIED,RESET_STATE
 
 class Buff(Collectables):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
@@ -49,11 +49,9 @@ class Buff(Collectables):
     def apply_buff(self, obj: Ball):
         if self.get_type() == 'size_up_player':
             player = obj.get_last_touched()
+            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_up_player"), 10000,1)
             pygame.event.post(pygame.event.Event(BUFF_APPLIED, target=player))
     
-    """ def remove_buff(self):
-        if self.get_type() == 'size_up_player':
-            pygame.event.post(pygame.event.Event(BUFF_APPLIED, target=None)) """
         
     def handle_events(self, events):
         pass
