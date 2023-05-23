@@ -13,8 +13,8 @@ from Ground import Ground
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(20, 20, 0, 0, 0, 0, 50, 0),
-            Player(20, 20, 80, 170, 0, 0, 50, 1),
+            Player(30, 50, 0, 0, 0, 0, 50, 0),
+            Player(30, 50, 80, 170, 0, 0, 50, 1),
             Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
             Debuff(20,20, 150, 50, 10),
             Buff(20,20,400,50,10),
