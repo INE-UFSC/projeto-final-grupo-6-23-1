@@ -9,12 +9,13 @@ from Buff import Buff
 from Debuff import Debuff
 from Goalpost import Goalpost
 from Ground import Ground
+from utils import get_image_path
 
 class Match:
     def __init__(self):
         self.__game_objects: list[GameObject] = [
-            Player(30, 50, 0, 0, 0, 0, 50, 0),
-            Player(30, 50, 80, 170, 0, 0, 50, 1),
+            Player(30, 50, 0, 0, 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
+            Player(30, 50, 80, 170, 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
             Debuff(20,20, 150, 50, 10),
             Buff(20,20,400,50,10),
@@ -64,8 +65,8 @@ class Match:
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
         if self.__cenario == 'test': #to do - implement cenario
-            background = pygame.image.load('sprites/stages/test/background.png')
-            ground = pygame.image.load('sprites/stages/test/ground.png')
+            background = pygame.image.load(get_image_path('sprites','stages','test','background.png'))
+            ground = pygame.image.load(get_image_path('sprites','stages','test','ground.png'))
         surface.blit(background, (0,0))
         surface.blit(ground, (0,288))
 
