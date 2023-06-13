@@ -2,16 +2,24 @@ from Character import Character
 from pygame import Rect, event
 import pygame
 from pygame.locals import *
-from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE
+from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
 from GameObject import GameObject
 
 class Player(Character):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass:float, controller: int):
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass:float, controller: int, sprite: str, is_player_one: bool):
         goals = 0
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass, goals)
         self.__controller = controller
         self.__default_speed = 10
         self.__default_jump_speed = 20
+        
+        # Load image
+        image_path = get_image_path('sprites', 'players', sprite)
+        self.__sprite = pygame.image.load(image_path)
+
+        # Inverts image horizontally if not player one (player in the left)
+        if is_player_one == False:
+            self.__sprite = pygame.transform.flip(self.__sprite, True, False)
 
         # maybe create an object?
         self.__controllers = [
@@ -116,7 +124,9 @@ class Player(Character):
             self.set_speed_y(0)
 
     def draw(self, pg: pygame, surface: pygame.Surface, r: int, g: int, b: int):
-        pg.draw.rect(surface, (r, g, b), self.get_rect())
+        rect = self.get_rect()
+        resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
+        surface.blit(resized_sprite, rect)
 
     def handle_events(self, events: event):
         for event in events:
