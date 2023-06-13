@@ -5,31 +5,14 @@ class Credits:
 
         sg.theme('Default 1')
 
-        self.layout_credits = [
-            [sg.Text(("CREDITS"), font=('Jokerman', 30), pad=(290,35), text_color=('black'))],
-            [sg.Text(("ARTHUR DE LARA MACHADO"), font=('Jokerman', 12), pad=(270,15), text_color=('black'))],
-            [sg.Text(("ANDRÉ THIAGO PFLEGER"), font=('Jokerman', 12), pad=(270,15), text_color=('black'))],
-            [sg.Text(("CAIO FERREIRA CARDOSO"), font=('Jokerman', 12), pad=(270,15), text_color=('black'))],
-            [sg.Text(("FELIPE FAGUNDES PACHECO"), font=('Jokerman',12), pad=(270,15), text_color=('black'))],
-            [sg.Button("VOLTAR", font=('Comic Sans MS', 12), button_color=('black', '#FFB90F'), pad=(340, 25))],
+        self.__layout_credits = [
+            [sg.Text(("CREDITS"), font=('Comic Sans MS', 40), pad=(635,75), text_color=('black'))],
+            [sg.Text(("ARTHUR DE LARA MACHADO"), font=('Comic Sans MS', 22), pad=(550,15), text_color=('black'))],
+            [sg.Text(("ANDRÉ THIAGO PFLEGER"), font=('Comic Sans MS', 22), pad=(570,15), text_color=('black'))],
+            [sg.Text(("CAIO FERREIRA CARDOSO"), font=('Comic Sans MS', 22), pad=(560,15), text_color=('black'))],
+            [sg.Text(("FELIPE FAGUNDES PACHECO"), font=('Comic Sans MS',22), pad=(545,15), text_color=('black'))],
+            [sg.Button("BACK", font=('Comic Sans MS', 22), button_color=('black', '#FFB90F'), pad=(700, 50))],
         ]
 
-        self.window = sg.Window('GOAL MASTERS', self.layout_credits, size=(800,600))
-
- 
-        while True:
-            event, values = self.window.read()
-            if event == sg.WIN_CLOSED:
-                break
-
-            if event == "VOLTAR":
-                self.window.close()
-                
-            
-            
-
-    def close(self):
-        self.window.close()
-
-credits = Credits()
-
+        self.__window = sg.Window('GOAL MASTERS', self.__layout_credits, size=(800,600),finalize=True)
+        self.__window.Maximize()
