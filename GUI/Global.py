@@ -26,9 +26,9 @@ class Global:
                 event, values = menu._Menu__window.read()
 
                 if event == "NEW GAME":
+                    menu._Menu__window.close()
                     new_game = NewGame()
                     event, values = new_game._NewGame__window.read()
-                    menu._Menu__window.close()
                     self.__screen_actually = self.__screens[3]
 
                 elif event == "HOW TO PLAY":
@@ -87,15 +87,12 @@ class Global:
 
                 elif event == "BACK":
                     self.__screen_actually = self.__screens[0]
-                    new_game._NewGame__window.close()
-
+                    
                 elif event == "PLAY AGAINST THE COMPUTER":
                     self.__screen_actually = self.__screens[6]
-                    new_game._NewGame__window.close()
 
                 elif event == "PLAY 1 VS 1":
                     self.__screen_actually = self.__screens[5]
-                    new_game._NewGame__window.close()
 
             elif self.__screen_actually == self.__screens[4]:
                 text = Text()
@@ -116,6 +113,8 @@ class Global:
                 if event == "BACK":
                     play_vs_play._Pre_Match__window.close()
                     self.__screen_actually = self.__screens[3]
+                    event, values = new_game._NewGame__window.read()
+
                 elif event == "-PREV-":
                     if play_vs_play._Pre_Match__vector == 0:
                         play_vs_play._Pre_Match__vector = len(play_vs_play.__uniforms_color) - 1
@@ -154,7 +153,11 @@ class Global:
                     print("")
 
                 elif event == "NEXT":
-                    print("")  
+                    print("") 
+            
+                elif event == sg.WIN_CLOSED:
+                    self.__screen_actually = self.__screens[7]
+            
             elif self.__screen_actually == self.__screens[6]:
                 play_vs_computer = Pre_Match(False)
             
@@ -163,6 +166,8 @@ class Global:
                 if event == "BACK":
                     play_vs_computer._Pre_Match__window.close()
                     self.__screen_actually = self.__screens[3]
+                    event,values = new_game._NewGame__window.read()
+
                 elif event == "-PREV-":
                     if play_vs_computer._Pre_Match__vector == 0:
                         play_vs_computer._Pre_Match__vector = len(play_vs_computer._Pre_Match__uniforms_color) - 1
@@ -200,6 +205,7 @@ class Global:
 
                 elif event == "NEXT":
                     print("")
+
             elif self.__screen_actually == self.__screens[7]:
                 break
 
