@@ -13,14 +13,14 @@ class Global:
 
     def events(self):
         self.__reproducing_music = False
+        menu = Menu()
         while True:
 
             if self.__screen_actually == self.__screens[0]:
-                menu = Menu()
                 if self.__reproducing_music == False:
                     menu.play_music()
                     menu.start()
-                    self.__reproducin_music = True
+                    self.__reproducing_music = True
 
                 event, values = menu._Menu__window.read()
 
@@ -42,7 +42,7 @@ class Global:
                     if menu._Menu__pause == False:
                         pygame.mixer.music.pause()
                         menu._Menu__pause = True
-                        menu._Menu__window['music_button'].update(text="🔈")
+                        menu._Menu__window['music_button'].update(text=" 🔈 ")
                     else:
                         pygame.mixer.music.unpause()
                         menu._Menu__pause = False
@@ -66,7 +66,8 @@ class Global:
 
                 elif event == "BACK":
                     credits._Credits__window.close()
-                    self.__screen_actually = self.__screens[0] 
+                    self.__screen_actually = self.__screens[0]
+                    menu = Menu()
 
             elif self.__screen_actually == self.__screens[2]:
                 how_to_play = HowToPlay()
@@ -78,6 +79,7 @@ class Global:
                 elif event == "BACK":
                     how_to_play._HowToPlay__window.close()
                     self.__screen_actually = self.__screens[0]
+                    menu = Menu()
 
             elif self.__screen_actually == self.__screens[4]:
                 text = Text()
@@ -86,6 +88,7 @@ class Global:
                 if event == "BACK":
                     text._Text__window.close()
                     self.__screen_actually = self.__screens[0]
+                    menu = Menu()
 
                 elif event == sg.WIN_CLOSED:
                     self.__screen_actually = self.__screens[5]
@@ -97,6 +100,7 @@ class Global:
                 if event == "BACK":
                     new_game._New_Game__window.close()
                     self.__screen_actually = self.__screens[0]
+                    menu = Menu()
 
                 elif event == "-PREV-":
                     if new_game._New_Game__vector == 0:

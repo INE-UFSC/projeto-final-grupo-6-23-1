@@ -19,7 +19,7 @@ class Menu:
 
         self.__layout = [
             [sg.Text("", font=('Comic Sans MS', 40), pad=(705,0)), sg.Button("⚽", font=('Comic Sans MS', 14), button_color=('black', '#FFB90F'), pad=(5, 15)), sg.Button("🔊", key="music_button", font=('Comic Sans MS', 14), button_color=('black', '#FFB90F'), pad=(5, 15))],
-            [sg.Text("GOAL MASTERS", font=('Comic Sans MS', 44), pad=(520,45))],
+            [sg.Text("GOAL MASTERS", font=('Comic Sans MS', 50), pad=(490,45))],
             [sg.Column(self.__buttons, element_justification="center", vertical_alignment="center")],        
         ]
 
@@ -28,7 +28,7 @@ class Menu:
         
     def play_music(self): 
         pygame.mixer.init()
-        pygame.mixer.music.load(r"C:\Users\User\Desktop\projeto_final_poo_2\projeto-final-grupo-6-23-1\GUI\Extras\MusicaFundo.wav")
+        pygame.mixer.music.load("C://Users//User//Desktop//projeto_final_poo_2//projeto-final-grupo-6-23-1//GUI//Music//Rednek_-_They_Call_Me_(Radio_Mix_a.k.a._Popstep_Remix)_-_PES_2013_Soundtrack(256k)_052315 (online-audio-converter.com).wav")
         pygame.mixer.music.play()
 
     def start(self):
