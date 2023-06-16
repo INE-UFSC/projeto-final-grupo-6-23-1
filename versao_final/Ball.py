@@ -1,6 +1,8 @@
 from MovingObjects import MovingObjects
 from GameObject import GameObject
 from Player import Player
+from Goalpost import Goalpost
+from Ground import Ground
 import pygame
 from pygame import Rect, event
 from pygame.locals import *
@@ -29,6 +31,10 @@ class Ball(MovingObjects):
         for obj in game_objects:
             if isinstance(obj, Player):
                 self.handle_player_collision(obj)
+            if isinstance(obj, Goalpost):
+                self.handle_goalpost_collision(obj)
+            if isinstance(obj, Ground):
+                self.handle_ground_collision(obj)
 
         self.collision_with_screen(width, height)
 
@@ -43,8 +49,8 @@ class Ball(MovingObjects):
         elif ball.left <= 0 and speed_x < 0:
             ball.left = 0
             self.set_speed_x(speed_x * -1)
-        elif ball.bottom >= height-72 and speed_y >= 0:
-            ball.bottom = height-72
+        elif ball.bottom >= height and speed_y >= 0:
+            ball.bottom = height
             self.set_speed_y(speed_y * -0.75)
         elif ball.top <= 0 and speed_y < 0:
             ball.top = 0
@@ -105,6 +111,40 @@ class Ball(MovingObjects):
                 ball.left = player_rect.right
                 self.set_speed_x(fv_ball_x)
             self.last_touched_player = player
+
+    def handle_goalpost_collision(self, goalpost: Goalpost):
+        ball = self.get_rect()
+        goalpost_rect = goalpost.get_rect()
+        speed_x = self.get_speed_x()
+        speed_y = self.get_speed_y()
+        collision_tolerance = 20
+
+        is_colliding = Rect.colliderect(goalpost_rect, ball)
+        if is_colliding:
+            if abs(ball.top - goalpost_rect.bottom) <= collision_tolerance:
+                ball.top = goalpost_rect.bottom
+                self.set_speed_y(speed_y * -0.75)
+            if abs(ball.right - goalpost_rect.left) <= collision_tolerance:
+                ball.right = goalpost_rect.left
+                self.set_speed_x((speed_x) * -0.75)
+            if abs(ball.bottom - goalpost_rect.top) <= collision_tolerance:
+                ball.bottom = goalpost_rect.top
+                self.set_speed_y(speed_y * -0.75)
+            if abs(ball.left - goalpost_rect.right) <= collision_tolerance:
+                ball.left = goalpost_rect.right
+                self.set_speed_x((speed_x) * -0.75)
+
+    def handle_ground_collision(self, ground: Ground):
+        ball = self.get_rect()
+        ground_rect = ground.get_rect()
+        speed_y = self.get_speed_y()
+        collision_tolerance = 20
+
+        is_colliding = Rect.colliderect(ground_rect, ball)
+        if is_colliding:
+            if abs(ball.bottom - ground_rect.top) <= collision_tolerance:
+                ball.bottom = ground_rect.top
+                self.set_speed_y(speed_y * -0.75)
 
     def get_last_touched(self):
         return self.last_touched_player
