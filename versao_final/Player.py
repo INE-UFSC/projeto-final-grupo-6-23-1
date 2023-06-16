@@ -6,6 +6,7 @@ from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
 from GameObject import GameObject
 from Ground import Ground
 from Goalpost import Goalpost
+from Scenario import Scenario
 
 class Player(Character):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass:float, controller: int, sprite: str, is_player_one: bool):
@@ -14,7 +15,8 @@ class Player(Character):
         self.__controller = controller
         self.__default_speed = 10
         self.__default_jump_speed = 20
-        
+        self.__in_floor = False
+
         # Load image
         image_path = get_image_path('sprites', 'players', sprite)
         self.__sprite = pygame.image.load(image_path)
@@ -89,14 +91,14 @@ class Player(Character):
     def handle_ground_collision(self, ground: Ground):
         player = self.get_rect()
         ground_rect = ground.get_rect()
-        speed_y = self.get_speed_y()
 
         is_colliding = Rect.colliderect(player, ground_rect)
         collision_tolerance = 20
         if is_colliding:
-            if abs(player.bottom - ground_rect.top) <= collision_tolerance and speed_y:
+            if abs(player.bottom - ground_rect.top) <= collision_tolerance:
                 player.bottom = ground_rect.top
                 self.set_speed_y(0)
+                self.__in_floor = True
 
     def handle_goalpost_collision(self, goalpost: Goalpost):
         player = self.get_rect()
@@ -120,17 +122,18 @@ class Player(Character):
                 player.left = goalpost_rect.right
                 self.set_speed_x(0)
 
-    def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
+    def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], scenario: Scenario, gravity: float, **args):
         controller = self.__controllers[self.__controller]
-        height = screen.get_height()
+        height = screen.get_height() - scenario.get_ground_height()
         player = self.get_rect()
 
         self.handle_gravity(height, gravity)
 
         for event in events:
             if event.type == KEYDOWN:
-                if event.key == controller["UP"]:
+                if event.key == controller["UP"] and self.__in_floor == True:
                     self.set_speed_y(-self.__default_jump_speed)
+                    self.__in_floor = False
                 if event.key == controller["LEFT"]:
                     self.set_speed_x(-self.__default_speed)
                 if event.key == controller["RIGHT"]:

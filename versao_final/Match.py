@@ -14,15 +14,16 @@ from utils import get_image_path
 
 class Match:
     def __init__(self, surface):
-        self.__scenario: Scenario = Scenario(surface)
+        self.__scenario: Scenario = Scenario()
         self.__game_objects: list[GameObject] = [
-            Player(30, 50, 0, 0, 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
+            Player(30, 50, 0, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
             Player(30, 50, 80, 170, 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
             Debuff(20,20, 150, 50, 10),
             Buff(20,20,400,50,10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
+            *self.__scenario.get_structures()
         ]
         self.__time: int = 180
         self.__gravity = 0.7
@@ -54,7 +55,8 @@ class Match:
                 obj.move(
                     events= events, 
                     screen= screen, 
-                    game_objects= self.__game_objects, 
+                    game_objects= self.__game_objects,
+                    scenario = self.__scenario,
                     gravity= self.__gravity
                 )
             elif isinstance(obj, Collectables):
@@ -65,7 +67,6 @@ class Match:
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
-        self.__scenario.draw(surface)
         """ background = pygame.image.load(get_image_path('sprites','stages','test','background.png'))
         ground = pygame.image.load(get_image_path('sprites','stages','test','ground.png'))
         surface.blit(background, (0,0))
