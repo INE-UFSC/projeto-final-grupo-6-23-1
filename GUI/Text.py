@@ -17,3 +17,6 @@ class Text:
         ]
         self.__window = sg.Window('GOAL MASTERS', self.__layout, size=(800,600),finalize=True)
         self.__window.Maximize()
+
+    def close(self):
+        self.__window.close()

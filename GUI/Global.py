@@ -2,14 +2,13 @@ import PySimpleGUI as sg
 from Menu import Menu
 from Credits import Credits
 from HowToPlay import HowToPlay
-from NewGame import NewGame
+from New_Game import New_Game
 from Text import Text
-from Pre_Match import Pre_Match
 import pygame
 
 class Global:
     def __init__(self):
-        self.__screens = [Menu, Credits, HowToPlay, NewGame,Text, "Pre_Match_True", "Pre_Match_False", "END"]
+        self.__screens = [Menu, Credits, HowToPlay, New_Game,Text,"END"]
         self.__screen_actually = self.__screens[0]
 
     def events(self):
@@ -26,9 +25,9 @@ class Global:
                 event, values = menu._Menu__window.read()
 
                 if event == "NEW GAME":
-                    new_game = NewGame()
-                    event, values = new_game._NewGame__window.read()
                     menu._Menu__window.close()
+                    new_game = New_Game()
+                    event, values = new_game._New_Game__window.read()
                     self.__screen_actually = self.__screens[3]
 
                 elif event == "HOW TO PLAY":
@@ -79,23 +78,6 @@ class Global:
                 elif event == "BACK":
                     how_to_play._HowToPlay__window.close()
                     self.__screen_actually = self.__screens[0]
-            
-            elif self.__screen_actually == self.__screens[3]:
-                
-                if event == sg.WIN_CLOSED:
-                    self.__screen_actually = self.__screens[7]
-
-                elif event == "BACK":
-                    self.__screen_actually = self.__screens[0]
-                    new_game._NewGame__window.close()
-
-                elif event == "PLAY AGAINST THE COMPUTER":
-                    self.__screen_actually = self.__screens[6]
-                    new_game._NewGame__window.close()
-
-                elif event == "PLAY 1 VS 1":
-                    self.__screen_actually = self.__screens[5]
-                    new_game._NewGame__window.close()
 
             elif self.__screen_actually == self.__screens[4]:
                 text = Text()
@@ -109,44 +91,45 @@ class Global:
                     self.__screen_actually = self.__screens[7]
 
 
-            elif self.__screen_actually == self.__screens[5]:
-                play_vs_play = Pre_Match(True)
-                event, values = play_vs_play._Pre_Match__window.read()
+            elif self.__screen_actually == self.__screens[3]:
+                event, values = new_game._New_Game__window.read()
 
                 if event == "BACK":
-                    play_vs_play._Pre_Match__window.close()
+                    new_game._New_Game__window.close()
                     self.__screen_actually = self.__screens[3]
+                    event, values = new_game._NewGame__window.read()
+
                 elif event == "-PREV-":
-                    if play_vs_play._Pre_Match__vector == 0:
-                        play_vs_play._Pre_Match__vector = len(play_vs_play.__uniforms_color) - 1
+                    if new_game._New_Game__vector == 0:
+                        new_game._New_Game__vector = len(new_game._New_Game__players) - 1
                     else:
-                        play_vs_play._Pre_Match__vector -= 1
-                        
-                    play_vs_play._Pre_Match__select = play_vs_play.__uniforms_color[play_vs_play.__vector]
-                    play_vs_play._Pre_Match__window["-IMAGE-"].update(filename=play_vs_play.__select)
+                        new_game._New_Game__vector -= 1
+                    
+                    new_game._New_Game__select = new_game.__players[new_game.__vector]
+                    new_game._New_Game__window["-IMAGE-"].update(filename=new_game.__select)
 
                 elif event == "-NEXT":
-                    if play_vs_play._Pre_Match__vector == len(play_vs_play._Pre_Match__uniforms_color) - 1:
-                        play_vs_play._Pre_Match__vector = 0
+                    if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
+                        new_game._New_Game__vector = 0
                     else:
-                        play_vs_play._Pre_Match__vector += 1
-                        play_vs_play._Pre_Match__select = play_vs_play._Pre_Match__uniforms_color[play_vs_play._Pre_Match__vector]
-                        play_vs_play._Pre_Match__window["-IMAGE-"].update(filename=play_vs_play._Pre_Match__select)
+                        new_game._New_Game__vector += 1
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-HOME-":
-                    if play_vs_play._Pre_Match__vector == 0:
-                        play_vs_play._Pre_Match__vector = len(play_vs_play._Pre_Match__uniforms_color) - 1
+                    if new_game._New_Game__vector == 0:
+                        new_game._New_Game__vector = len(new_game._New_Game__players) - 1
                     else:
-                        play_vs_play._Pre_Match__vector -= 1
-                        play_vs_play._Pre_Match__select = play_vs_play._Pre_Match__uniforms_color[play_vs_play._Pre_Match__vector]
+                        new_game._New_Game__vector -= 1
+                        new_game._New_Game__select = new_game._New_Game__uniforms_color[new_game._New_Game__vector]
 
                 elif event == "-END":
-                    if play_vs_play._Pre_Match__vector == len(play_vs_play._Pre_Match__uniforms_color) - 1:
-                        play_vs_play._Pre_Match__vector = 0
+                    if new_game._New_Game__vector == len(new_game._New_Game__uniforms_color) - 1:
+                        new_game._New_Game__vector = 0
                     else:
-                        play_vs_play._Pre_Match__vector += 1
-                        play_vs_play._Pre_Match__select = play_vs_play._Pre_Match__uniforms_color[play_vs_play._Pre_Match__vector]
-                        play_vs_play._Pre_Match__window["-IMAGE_UNIFORM-"].update(filename=play_vs_play._Pre_Match__select)
+                        new_game._New_Game__vector += 1
+                        new_game._New_Game__select = new_game._New_Game__uniforms_color[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-PREVIOUS":
                     print("")
@@ -154,53 +137,12 @@ class Global:
                     print("")
 
                 elif event == "NEXT":
-                    print("")  
-            elif self.__screen_actually == self.__screens[6]:
-                play_vs_computer = Pre_Match(False)
+                    print("")
             
-                event, values = play_vs_computer._Pre_Match__window.read()
-
-                if event == "BACK":
-                    play_vs_computer._Pre_Match__window.close()
-                    self.__screen_actually = self.__screens[3]
-                elif event == "-PREV-":
-                    if play_vs_computer._Pre_Match__vector == 0:
-                        play_vs_computer._Pre_Match__vector = len(play_vs_computer._Pre_Match__uniforms_color) - 1
-                    else:
-                        play_vs_computer._Pre_Match__vector -= 1
-                        play_vs_computer._Pre_Match__select = play_vs_computer._Pre_Match__uniforms_color[play_vs_computer._Pre_Match__vector]
-                        play_vs_computer._Pre_Match__window["-IMAGE-"].update(filename=play_vs_computer._Pre_Match__select)
-
-                elif event == "-NEXT":
-                    if play_vs_computer._Pre_Match__vector == len(play_vs_computer._Pre_Match__uniforms_color) - 1:
-                        play_vs_computer._Pre_Match__vector = 0
-                    else:
-                        play_vs_computer._Pre_Match__vector += 1
-                        play_vs_computer._Pre_Match__select = play_vs_computer._Pre_Match__uniforms_color[play_vs_computer._Pre_Match__vector]
-                        play_vs_computer._Pre_Match__window["-IMAGE-"].update(filename=play_vs_computer._Pre_Match__select)
-
-                elif event == "-HOME-":
-                    if play_vs_computer._Pre_Match__vector == 0:
-                        play_vs_computer._Pre_Match__vector = len(play_vs_computer._Pre_Match__uniforms_color) - 1
-                    else:
-                        play_vs_computer._Pre_Match__vector -= 1
-                        play_vs_computer._Pre_Match__select = play_vs_computer._Pre_Match__uniforms_color[play_vs_computer._Pre_Match__vector]
-                
-                elif event == "-END":
-                    if play_vs_computer._Pre_Match__vector == len(play_vs_computer._Pre_Match__uniforms_color) - 1:
-                        play_vs_computer._Pre_Match__vector = 0
-                    else:
-                        play_vs_computer._Pre_Match__vector += 1
-                        play_vs_computer._Pre_Match__select = play_vs_computer._Pre_Match__uniforms_color[play_vs_computer._Pre_Match__vector]
-                        play_vs_computer._Pre_Match__window["-IMAGE_UNIFORM-"].update(filename=play_vs_computer._Pre_Match__select)
-                elif event == "-PREVIOUS":
-                    print("")
-                elif event == "-FOLLOWING":
-                    print("")
-
-                elif event == "NEXT":
-                    print("")
-            elif self.__screen_actually == self.__screens[7]:
+                elif event == sg.WIN_CLOSED:
+                    self.__screen_actually = self.__screens[5]
+        
+            elif self.__screen_actually == self.__screens[5]:
                 break
 
 a = Global()

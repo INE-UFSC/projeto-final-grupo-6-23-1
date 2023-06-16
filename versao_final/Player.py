@@ -4,6 +4,8 @@ import pygame
 from pygame.locals import *
 from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
 from GameObject import GameObject
+from Ground import Ground
+from Goalpost import Goalpost
 
 class Player(Character):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass:float, controller: int, sprite: str, is_player_one: bool):
@@ -40,23 +42,24 @@ class Player(Character):
         for obj in game_objects:
             if isinstance(obj, Player) and obj != self:
                 self.handle_player_collision(obj)
+            if isinstance(obj, Ground):
+                self.handle_ground_collision(obj)
+            if isinstance(obj, Goalpost):
+                self.handle_goalpost_collision(obj)
         
-        self.collision_with_screen(width, height)
+        self.collision_with_screen(width)
 
-    def collision_with_screen(self, width, height):
+    def collision_with_screen(self, width):
         player = self.get_rect()
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
-        
+
         if player.right >= width and speed_x > 0:
             player.right = width
             self.set_speed_x(0)
         elif player.left <= 0 and speed_x < 0:
             player.left = 0
             self.set_speed_x(0)
-        elif player.bottom >= height-72 and speed_y >= 0:
-            player.bottom = height-72
-            self.set_speed_y(0)
         elif player.top <= 0 and speed_y < 0:
             player.top = 0
             self.set_speed_y(0)
@@ -83,6 +86,40 @@ class Player(Character):
                 player.left = player2.right
                 self.set_speed_x(0)
 
+    def handle_ground_collision(self, ground: Ground):
+        player = self.get_rect()
+        ground_rect = ground.get_rect()
+        speed_y = self.get_speed_y()
+
+        is_colliding = Rect.colliderect(player, ground_rect)
+        collision_tolerance = 20
+        if is_colliding:
+            if abs(player.bottom - ground_rect.top) <= collision_tolerance and speed_y:
+                player.bottom = ground_rect.top
+                self.set_speed_y(0)
+
+    def handle_goalpost_collision(self, goalpost: Goalpost):
+        player = self.get_rect()
+        goalpost_rect = goalpost.get_rect()
+        speed_x = self.get_speed_x()
+        speed_y = self.get_speed_y()
+        collision_tolerance = 20
+
+        is_colliding = Rect.colliderect(goalpost_rect, player)
+        if is_colliding:
+            if abs(player.top - goalpost_rect.bottom) <= collision_tolerance:
+                player.top = goalpost_rect.bottom
+                self.set_speed_y(0)
+            if abs(player.right - goalpost_rect.left) <= collision_tolerance:
+                player.right = goalpost_rect.left
+                self.set_speed_x(0)
+            if abs(player.bottom - goalpost_rect.top) <= collision_tolerance:
+                player.bottom = goalpost_rect.top
+                self.set_speed_y(0)
+            if abs(player.left - goalpost_rect.right) <= collision_tolerance:
+                player.left = goalpost_rect.right
+                self.set_speed_x(0)
+
     def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
         controller = self.__controllers[self.__controller]
         height = screen.get_height()
@@ -103,7 +140,7 @@ class Player(Character):
                     self.set_speed_x(0)
                 elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
                     self.set_speed_x(0)
-        
+
         self.check_collisions(
             screen.get_width(), 
             screen.get_height(),
@@ -145,5 +182,3 @@ class Player(Character):
                 
                 elif event.collectable_type == 'size_down_player':
                     event.target.get_rect().height *=2
-                
-                

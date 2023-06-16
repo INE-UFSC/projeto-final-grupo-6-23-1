@@ -1,9 +1,8 @@
 import PySimpleGUI as sg
 from Credits import Credits
 from HowToPlay import HowToPlay
-from NewGame import NewGame
+from New_Game import New_Game
 from Text import Text
-from Pre_Match import Pre_Match
 import pygame
 
 
@@ -24,13 +23,16 @@ class Menu:
             [sg.Column(self.__buttons, element_justification="center", vertical_alignment="center")],        
         ]
 
-        self.__window = sg.Window('GOAL MASTERS', self.__layout, size=(800,600),finalize=True, progress_bar_color="C://Users//User//Desktop//ARQUIVOS\Shirts\Camisa_Azul.png")
+        self.__window = sg.Window('GOAL MASTERS', self.__layout, size=(800,600),finalize=True)
         self.__window.Maximize()
         
     def play_music(self): 
         pygame.mixer.init()
-        pygame.mixer.music.load(r"C:\Users\User\Desktop\ARQUIVOS\Extras\MusicaFundo.wav")
+        pygame.mixer.music.load(r"C:\Users\User\Desktop\projeto_final_poo_2\projeto-final-grupo-6-23-1\GUI\Extras\MusicaFundo.wav")
         pygame.mixer.music.play()
 
     def start(self):
         self.play_music()
+
+    def close(self):
+        self.__window.close()
