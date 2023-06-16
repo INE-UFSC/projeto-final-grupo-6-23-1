@@ -54,7 +54,7 @@ class Global:
 
                 elif event == "QUIT" or event == sg.WIN_CLOSED:
                     menu._Menu__window.close()
-                    self.__screen_actually = self.__screens[7]
+                    self.__screen_actually = self.__screens[5]
 
 
             elif self.__screen_actually == self.__screens[1]:
@@ -73,7 +73,7 @@ class Global:
                 event, values = how_to_play._HowToPlay__window.read()
                 if event == sg.WIN_CLOSED:
                     how_to_play._HowToPlay__window.close()
-                    self.__screen_actually = self.__screens[7]
+                    self.__screen_actually = self.__screens[5]
 
                 elif event == "BACK":
                     how_to_play._HowToPlay__window.close()
@@ -88,7 +88,7 @@ class Global:
                     self.__screen_actually = self.__screens[0]
 
                 elif event == sg.WIN_CLOSED:
-                    self.__screen_actually = self.__screens[7]
+                    self.__screen_actually = self.__screens[5]
 
 
             elif self.__screen_actually == self.__screens[3]:
@@ -96,17 +96,15 @@ class Global:
 
                 if event == "BACK":
                     new_game._New_Game__window.close()
-                    self.__screen_actually = self.__screens[3]
-                    event, values = new_game._NewGame__window.read()
+                    self.__screen_actually = self.__screens[0]
 
                 elif event == "-PREV-":
                     if new_game._New_Game__vector == 0:
                         new_game._New_Game__vector = len(new_game._New_Game__players) - 1
                     else:
                         new_game._New_Game__vector -= 1
-                    
-                    new_game._New_Game__select = new_game.__players[new_game.__vector]
-                    new_game._New_Game__window["-IMAGE-"].update(filename=new_game.__select)
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-NEXT":
                     if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
@@ -121,14 +119,15 @@ class Global:
                         new_game._New_Game__vector = len(new_game._New_Game__players) - 1
                     else:
                         new_game._New_Game__vector -= 1
-                        new_game._New_Game__select = new_game._New_Game__uniforms_color[new_game._New_Game__vector]
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-END":
-                    if new_game._New_Game__vector == len(new_game._New_Game__uniforms_color) - 1:
+                    if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
                         new_game._New_Game__vector = 0
                     else:
                         new_game._New_Game__vector += 1
-                        new_game._New_Game__select = new_game._New_Game__uniforms_color[new_game._New_Game__vector]
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
                         new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-PREVIOUS":
