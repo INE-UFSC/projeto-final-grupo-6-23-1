@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from GameObject import GameObject
+import pygame
+import random
+from pygame import Rect
 class Collectables(GameObject, ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
         super().__init__(width, height, pos_x, pos_y)
@@ -30,3 +33,22 @@ class Collectables(GameObject, ABC):
     #Get the type of the collectable.
     def get_type(self) -> str:
         return self.type
+
+    def set_to_random_position(self, objects: list[GameObject], screen: pygame.surface.Surface):
+        height = screen.get_height()
+        widht = screen.get_width()
+        pos_x = random.randint(0,widht)
+        pos_y = random.randint(0,height)
+        new_rect = Rect(pos_x,pos_y,self.get_width(),self.get_height())
+        is_collinding = False
+
+        for obj in objects:
+            if Rect.colliderect(new_rect, obj.get_rect()):
+                is_collinding = True
+        
+        if not is_collinding:
+            self.set_pos(pos_x, pos_y)
+        
+        else:
+            self.set_to_random_position(objects, screen)
+        

@@ -174,10 +174,14 @@ class Player(Character):
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height * 2))
                 self.set_rect(new_rect_applied)
         
-            elif event.type == DEBUFF_APPLIED  and self == event.target:
+            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'size_down_player' and self == event.target:
                 player_min = self.get_rect().height * 0.5
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
+
+            #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
+
+
 
             if event.type == RESET_STATE and self == event.target:
                 if event.collectable_type == 'size_up_player':

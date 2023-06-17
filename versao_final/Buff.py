@@ -9,8 +9,8 @@ from Player import Player
 from utils import BUFF_APPLIED,RESET_STATE
 
 class Buff(Collectables):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
-        super().__init__(width, height, pos_x, pos_y, duration, self.gen_rand_buff())
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
+        super().__init__(width, height, pos_x, pos_y, duration, type)
         self.start_time = None
         self.target = None
 
@@ -21,7 +21,7 @@ class Buff(Collectables):
                 if isinstance(obj, Ball):
                     self.apply_buff(obj)
                     collided = True
-                """   elif isinstance(obj, Player):
+                """elif isinstance(obj, Player):
                     self.apply_buff(obj)
                     collided = True
                 elif isinstance(obj, Goalpost):
@@ -42,6 +42,7 @@ class Buff(Collectables):
                 self.remove_buff()
                 self.start_time = None
     
+    @classmethod
     def gen_rand_buff(self):
         buffs = ['size_up_player']
         return random.choice(buffs)

@@ -9,8 +9,8 @@ from Player import Player
 from utils import DEBUFF_APPLIED, RESET_STATE
 
 class Debuff(Collectables):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
-        super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
+        super().__init__(width, height, pos_x, pos_y,duration, type)
 
     def check_collision(self, objects: list[GameObject]):
         collided = False
@@ -35,14 +35,19 @@ class Debuff(Collectables):
 
         return False
     #Generate a random debuff for the match
+    @classmethod
     def gen_rand_debuff(self) -> str:
-        debuffs = ['size_down_player']
+        debuffs = ['size_down_player','frozen']
         return random.choice(debuffs)
 
     def apply_debuff(self, obj: Ball):
         if self.get_type() == 'size_down_player':
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_player"), 10000,1)
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))
+        elif self.get_type() == 'fronzen':
+            player = obj.get_last_touched()
+            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="fronzen"), 10000,1)
             pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))
     
     def handle_events(self,events):
