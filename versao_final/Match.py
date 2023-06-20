@@ -18,7 +18,7 @@ class Match:
         self.__scenario: Scenario = Scenario()
         pygame.init()
         pygame.mixer.init()
-        pygame.mixer.music.load("C://Users//User//Desktop//projeto_final//projeto-final-grupo-6-23-1//versao_final//sprites//sound//Som_de_torcida_som_de_estadio_efeito_sonoro_-_Cheering_sound_stadium_sound_sound_effect(128k)_060105 (1).wav")
+        pygame.mixer.music.load("./versao_final/sprites/sound/Som_de_torcida_som_de_estadio_efeito_sonoro_-_Cheering_sound_stadium_sound_sound_effect(128k)_060105 (1).wav")
         pygame.mixer.music.play(-1)
         self.__game_objects: list[GameObject] = [
             Player(30, 50, 0, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
