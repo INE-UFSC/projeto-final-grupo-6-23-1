@@ -1,11 +1,12 @@
 import PySimpleGUI as sg
+from utils import get_file_path
 
 class New_Game:
 
     def __init__(self):
         self.__players = [
-            "C://Users//User//Desktop//projeto_final//projeto-final-grupo-6-23-1//versao_final//sprites//players//messi.png",
-            "C://Users//User//Desktop//projeto_final//projeto-final-grupo-6-23-1//versao_final//sprites//players//ronaldinho.png",
+            get_file_path('sprites', 'players', 'messi.png'),
+            get_file_path('sprites', 'players', 'ronaldinho.png'),
     
         ]
 

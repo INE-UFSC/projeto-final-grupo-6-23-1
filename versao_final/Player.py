@@ -2,7 +2,7 @@ from Character import Character
 from pygame import Rect, event
 import pygame
 from pygame.locals import *
-from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
+from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_file_path
 from GameObject import GameObject
 from Ground import Ground
 from Goalpost import Goalpost
@@ -18,7 +18,7 @@ class Player(Character):
         self.__in_floor = False
 
         # Load image
-        image_path = get_image_path('sprites', 'players', sprite)
+        image_path = get_file_path('sprites', 'players', sprite)
         self.__sprite = pygame.image.load(image_path)
 
         # Inverts image horizontally if not player one (player in the left)
