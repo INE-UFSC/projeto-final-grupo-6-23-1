@@ -28,7 +28,7 @@ class Menu:
         
     def play_music(self): 
         pygame.mixer.init()
-        pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
+        pygame.mixer.music.load(get_file_path('sprites', 'sound', 'music.wav'))
         pygame.mixer.music.play()
 
     def start(self):
