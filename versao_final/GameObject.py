@@ -5,6 +5,7 @@ from abc import ABC,abstractmethod
 class GameObject(ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int):
         self.__rect = Rect(pos_x, pos_y, width, height)
+        self.__old_rect = self.__rect
 
     # getters
     def get_width(self) -> int:
@@ -28,6 +29,15 @@ class GameObject(ABC):
     
     def set_rect(self, rect: Rect):
         self.__rect = rect
+        
+    def get_old_rect(self) -> Rect:
+        return self.__old_rect
+    
+    def set_old_rect(self, rect: Rect):
+        self.__old_rect = rect
+
+    def update_old_rect(self):
+        self.__old_rect = self.__rect.copy()
     
     @abstractmethod
     def handle_events(self):

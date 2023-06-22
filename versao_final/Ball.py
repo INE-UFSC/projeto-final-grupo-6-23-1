@@ -1,42 +1,76 @@
 from MovingObjects import MovingObjects
 from GameObject import GameObject
-from Player import Player
 from Goalpost import Goalpost
 from Ground import Ground
 import pygame
+import Player # needs to be imported like this, otherwise an error is thrown
+from CollisionList import CollisionList
 from pygame import Rect, event
 from pygame.locals import *
+from utils import get_image_path
 
 class Ball(MovingObjects):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass: float, radius: int):
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass: float):
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass)
-        self.__radius = radius
         self.__retention = 0.7 # variable that retains ball momentum when bouncing
-        self.__friction = 0.7 # ball friction against soil
+        self.__friction = 0.95 # ball friction against soil
         self.last_touched_player = None
+        self.__stop_bounce = 3
+        self.__in_ground = False
 
-    def handle_gravity(self, height, gravity):
-        stop_bounce = 4 #value choosen by tests, subject to change
-        speed_y = self.get_speed_y()
-        
-        if self.get_pos_y() + self.__radius < height:
+        #Note: Ball should not goes as faster as the player.width/2, this can cause
+        #the ball to tunneling
+        self.__speed_limit = 10
+
+        # Load image
+        image_path = get_image_path('sprites', 'ball.png')
+        self.__sprite = pygame.image.load(image_path)
+
+    def handle_gravity(self, gravity):
+        if self.__in_ground is not True:
+            speed_y = self.get_speed_y()
             self.set_speed_y(speed_y + gravity)
-        else:
-            if speed_y > stop_bounce:
-                self.set_speed_y(speed_y * -1 * self.__retention)
-            elif abs(speed_y) <= stop_bounce:
-                self.set_speed_y(0)
 
-    def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
-        for obj in game_objects:
-            if isinstance(obj, Player):
-                self.handle_player_collision(obj)
-            if isinstance(obj, Goalpost):
-                self.handle_goalpost_collision(obj)
-            if isinstance(obj, Ground):
-                self.handle_ground_collision(obj)
+    def handle_stop_bounce(self, limiter):
+        speed_y = self.get_speed_y()
+        ball = self.get_rect()
+
+        if abs(speed_y) > self.__stop_bounce:
+            self.set_speed_y(speed_y * self.__retention)
+        elif abs(speed_y) <= self.__stop_bounce and ball.bottom <= limiter:
+            self.set_speed_y(0)
+            self.__in_ground = True
+
+    def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):        
+        self.handle_friction() 
+        self.update_pos('horizontal')
+        self.handle_collision('horizontal', game_objects)
+        self.handle_gravity(gravity)
+        self.update_pos('vertical')
+        self.handle_collision('vertical', game_objects)
 
         self.collision_with_screen(width, height)
+
+    def handle_collision(self, direction, game_objects):
+        if direction == 'horizontal':
+            collision_list = CollisionList(self, game_objects)
+
+            for obj in collision_list.get_collisions():
+                if isinstance(obj, Player.Player):
+                    self.handle_player_collision(obj, direction)
+                elif isinstance(obj, Goalpost):
+                    self.handle_goalpost_collision(obj, direction)
+
+        elif direction == 'vertical':
+            collision_list = CollisionList(self, game_objects)
+
+            for obj in collision_list.get_collisions():
+                if isinstance(obj, Player.Player):
+                    self.handle_player_collision(obj, direction)
+                elif isinstance(obj, Ground):
+                    self.handle_ground_collision(obj)
+                elif isinstance(obj, Goalpost):
+                    self.handle_goalpost_collision(obj, direction)
 
     def collision_with_screen(self, width, height):
         ball = self.get_rect()
@@ -56,129 +90,114 @@ class Ball(MovingObjects):
             ball.top = 0
             self.set_speed_y(speed_y * -1)
 
-    def handle_friction(self, height):
+    def handle_friction(self):
         stop_rotating = 0.3
-
-        if self.get_speed_y() == 0 and abs(self.get_speed_x()) < stop_rotating:
+        
+        if abs(self.get_speed_x()) < stop_rotating:
             self.set_speed_x(0)
-        elif self.get_pos_y() + self.__radius >= height:
+        elif self.__in_ground:
             self.set_speed_x(self.get_speed_x() * self.__friction)
 
-    def handle_x_collision(self, width):
-        speed_x = self.get_speed_x()
-        
-        if self.get_pos_x() + self.__radius < width and speed_x > 0:
-            self.set_speed_x(speed_x)
-        elif self.get_pos_x() + self.__radius > width and speed_x > 0:
-            self.set_speed_x((speed_x) * -1)
-        elif self.get_pos_x() + self.__radius > 0 and speed_x < 0:
-            self.set_speed_x(speed_x)
-        elif self.get_pos_x() + self.__radius < 0 and speed_x < 0:
-            self.set_speed_x((speed_x) * -1)
+    def handle_player_collision(self, obj, direction):
+        speed_increase = 5
+        ball_speed_x = self.get_speed_x()
+        ball_speed_y = self.get_speed_y()
+        ball_rect = self.get_rect()
+        ball_old_rect = self.get_old_rect()
 
-    def calc_final_velocity(self, ball_speed, player_speed):
-        delta_t = 0.1 # collision time
-        ball_mass = self.get_mass()
-        ball_a = (ball_speed + player_speed) / delta_t
-        f_ball = ball_mass * ball_a
-        fv_ball = ((f_ball * delta_t) + (ball_mass * ball_speed))/ball_mass
+        player_rect = obj.get_rect()
+        player_old_rect = obj.get_old_rect()
 
-        return fv_ball
+        if direction == 'horizontal':
+            #collision on the right
+            if ball_rect.right >= player_rect.left and ball_old_rect.right <= player_old_rect.left:
+                ball_rect.right = player_rect.left
 
-    def handle_player_collision(self, player: Player):
-        ball = self.get_rect()
-        player_rect = player.get_rect()
-        speed_x = self.get_speed_x()
-        speed_y = self.get_speed_y()
+            #collision on the left
+            elif ball_rect.left <= player_rect.right and ball_old_rect.left >= player_old_rect.right:
+                ball_rect.left = player_rect.right
 
-        is_colliding = Rect.colliderect(player_rect, ball)
-        collision_tolerance = 20
-        
-        fv_ball_y = self.calc_final_velocity(speed_y, player.get_speed_y())
-        fv_ball_x = self.calc_final_velocity(speed_x, player.get_speed_x())
+            self.set_speed_x(ball_speed_x * -1)
 
-        if is_colliding:
-            if abs(ball.top - player_rect.bottom) <= collision_tolerance:
-                ball.top = player_rect.bottom
-                self.set_speed_y(fv_ball_y)
-            if abs(ball.right - player_rect.left) <= collision_tolerance:
-                ball.right = player_rect.left
-                self.set_speed_x(fv_ball_x)
-            if abs(ball.bottom - player_rect.top) <= collision_tolerance:
-                ball.bottom = player_rect.top
-                self.set_speed_y(fv_ball_y)
-            if abs(ball.left - player_rect.right) <= collision_tolerance:
-                ball.left = player_rect.right
-                self.set_speed_x(fv_ball_x)
-            self.last_touched_player = player
+        if direction == 'vertical':
+            #collision on the right
+            if ball_rect.bottom <= player_rect.top and ball_old_rect.bottom >= player_old_rect.top:
+                ball_rect.bottom = player_rect.top
 
-    def handle_goalpost_collision(self, goalpost: Goalpost):
-        ball = self.get_rect()
+            #collision on the left
+            elif ball_rect.top >= player_rect.bottom and ball_old_rect.top <= player_old_rect.bottom:
+                ball_rect.top = player_rect.bottom
+
+            self.set_speed_y(ball_speed_y * -1)
+
+    def handle_goalpost_collision(self, goalpost: Goalpost, direction):
+        ball_rect = self.get_rect()
+        ball_old_rect = self.get_old_rect()
         goalpost_rect = goalpost.get_rect()
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
-        collision_tolerance = 20
 
-        is_colliding = Rect.colliderect(goalpost_rect, ball)
-        if is_colliding:
-            if abs(ball.top - goalpost_rect.bottom) <= collision_tolerance:
-                ball.top = goalpost_rect.bottom
-                self.set_speed_y(speed_y * -0.75)
-            if abs(ball.right - goalpost_rect.left) <= collision_tolerance:
-                ball.right = goalpost_rect.left
+        if direction == 'horizontal':
+            if ball_rect.right >= goalpost_rect.left and ball_old_rect.right <= goalpost_rect.left:
+                ball_rect.right = goalpost_rect.left
                 self.set_speed_x((speed_x) * -0.75)
-            if abs(ball.bottom - goalpost_rect.top) <= collision_tolerance:
-                ball.bottom = goalpost_rect.top
-                self.set_speed_y(speed_y * -0.75)
-            if abs(ball.left - goalpost_rect.right) <= collision_tolerance:
-                ball.left = goalpost_rect.right
+            if ball_rect.left <= goalpost_rect.right and ball_old_rect.left >= goalpost_rect.left:
+                ball_rect.left = goalpost_rect.right
                 self.set_speed_x((speed_x) * -0.75)
+        elif direction == 'vertical':
+            if ball_rect.bottom >= goalpost_rect.top and ball_old_rect.bottom <= goalpost_rect.top:
+                ball_rect.bottom = goalpost_rect.top
+                self.set_speed_y(speed_y * -0.75)
+                self.handle_stop_bounce(goalpost_rect.top)
 
     def handle_ground_collision(self, ground: Ground):
-        ball = self.get_rect()
+        ball_rect = self.get_rect()
+        ball_old_rect = self.get_old_rect()
         ground_rect = ground.get_rect()
+        ground_old_rect = ground.get_old_rect()
         speed_y = self.get_speed_y()
-        collision_tolerance = 20
 
-        is_colliding = Rect.colliderect(ground_rect, ball)
-        if is_colliding:
-            if abs(ball.bottom - ground_rect.top) <= collision_tolerance:
-                ball.bottom = ground_rect.top
-                self.set_speed_y(speed_y * -0.75)
+        if ball_rect.bottom >= ground_rect.top and ball_old_rect.bottom <= ground_old_rect.top:
+            ball_rect.bottom = ground_rect.top
+            self.set_speed_y(speed_y * -0.75)
+            self.handle_stop_bounce(ground_rect.top)
 
     def get_last_touched(self):
         return self.last_touched_player
     
-    def update_pos(self):
-        new_rect = Rect(self.get_pos_x() + self.get_speed_x(), 
-                        self.get_pos_y() + self.get_speed_y(), 
-                        self.get_rect().width,
-                        self.get_rect().height
-                    )
-        self.set_rect(new_rect)
+    def update_pos(self, direction):
+        x = self.get_pos_x()
+        y = self.get_pos_y()
+
+        if direction == 'horizontal':
+            speed = self.get_speed_x()
+            self.set_pos(x + speed, y)
+        elif direction == 'vertical':
+            speed = self.get_speed_y()
+            self.set_pos(x, y + speed)
+
+    #ensures ball does not goes faster than expected
+    def apply_speed_limiter(self):
+        speed_x = self.get_speed_x()
+        speed_y = self.get_speed_y()
+
+        if abs(speed_x) > self.__speed_limit:
+            self.set_speed_x(speed_x/speed_x * self.__speed_limit)
+        if abs(speed_y) > self.__speed_limit:
+            self.set_speed_y(speed_y/speed_y * self.__speed_limit)
 
     def move(self, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
         width = screen.get_width()
         height =  screen.get_height()
+        self.update_old_rect()
 
-        self.handle_friction(height)
-        self.handle_gravity(height, gravity)
         self.check_collisions(width, height, game_objects, gravity)
-        self.update_pos()
+        self.apply_speed_limiter()
 
     def draw(self, pg: pygame, surface: pygame.Surface):
-        pg.draw.rect(surface, (255, 255, 255), self.get_rect())
-
-    def get_radius(self):
-        return self.__radius
-    
-    def set_radius(self, radius):
-        self.__radius = radius
+        rect = self.get_rect()
+        resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
+        surface.blit(resized_sprite, rect)
     
     def handle_events(self,events):
         pass
-
-    def set_pos(self, pos_x: int, pos_y: int):
-        super().set_pos(pos_x, pos_y)
-        self.set_speed_x(0)
-        self.set_speed_y(0)

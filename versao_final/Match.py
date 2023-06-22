@@ -16,17 +16,17 @@ class Match:
     def __init__(self, surface):
         self.__scenario: Scenario = Scenario()
         self.__game_objects: list[GameObject] = [
-            Player(30, 50, 0, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
-            Player(30, 50, 80, 170, 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
-            Ball(20, 20, 40, 0, 20, 0, 1.5, 20),
-            Debuff(20,20, 150, 50, 10),
-            Buff(20,20,400,50,10),
+            Player(40, 50, 0, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=False),
+            Player(40, 50, 80, 170, 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=True),
+            Ball(20, 20, 40, 0, 20, 0, 1.5),
+            #Debuff(20,20, 150, 50, 10),
+            #Buff(20,20,400,50,10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
         ]
         self.__time: int = 180
-        self.__gravity = 0.7
+        self.__gravity = 0.6
         #self.__collectable_timer = 10
 
     """ def check_collisions(self):

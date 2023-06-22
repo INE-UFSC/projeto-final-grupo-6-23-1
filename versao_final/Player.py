@@ -1,20 +1,22 @@
 from Character import Character
 from pygame import Rect, event
 import pygame
+import Ball
 from pygame.locals import *
 from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
 from GameObject import GameObject
 from Ground import Ground
 from Goalpost import Goalpost
 from Scenario import Scenario
+from CollisionList import CollisionList
 
 class Player(Character):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass:float, controller: int, sprite: str, is_player_one: bool):
         goals = 0
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass, goals)
         self.__controller = controller
-        self.__default_speed = 10
-        self.__default_jump_speed = 20
+        self.__default_speed = 6
+        self.__default_jump_speed = 15
         self.__in_floor = False
 
         # Load image
@@ -40,16 +42,38 @@ class Player(Character):
                 "RIGHT": pygame.K_d
             },
         ]
+    
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
-        for obj in game_objects:
-            if isinstance(obj, Player) and obj != self:
-                self.handle_player_collision(obj)
-            if isinstance(obj, Ground):
-                self.handle_ground_collision(obj)
-            if isinstance(obj, Goalpost):
-                self.handle_goalpost_collision(obj)
+        self.update_pos('horizontal')
+        self.handle_collision('horizontal', game_objects)
+        self.handle_gravity(height, gravity)
+        self.update_pos('vertical')
+        self.handle_collision('vertical', game_objects)
         
         self.collision_with_screen(width)
+
+    def handle_collision(self, direction, game_objects):
+        if direction == 'horizontal':
+            collision_list = CollisionList(self, game_objects)
+
+            for obj in collision_list.get_collisions():
+                if isinstance(obj, Player) and obj != self:
+                    self.handle_player_collision(obj, direction)
+                elif isinstance(obj, Ball.Ball):
+                    self.handle_ball_collision(obj, direction)
+
+        elif direction == 'vertical':
+            collision_list = CollisionList(self, game_objects)
+
+            for obj in collision_list.get_collisions():
+                if isinstance(obj, Player) and obj != self:
+                    self.handle_player_collision(obj, direction)
+                elif isinstance(obj, Ground):
+                    self.handle_ground_collision(obj)
+                elif isinstance(obj, Goalpost):
+                    self.handle_goalpost_collision(obj)
+                elif isinstance(obj, Ball.Ball):
+                    self.handle_ball_collision(obj, direction)
 
     def collision_with_screen(self, width):
         player = self.get_rect()
@@ -66,68 +90,75 @@ class Player(Character):
             player.top = 0
             self.set_speed_y(0)
 
-    def handle_player_collision(self, other_player):
-        player = self.get_rect()
-        player2 = other_player.get_rect()
-        speed_x = self.get_speed_x()
-        speed_y = self.get_speed_y()
+    def handle_ball_collision(self, obj: Ball, direction):
+        player_rect = self.get_rect()
+        player_old_rect = self.get_old_rect()
 
-        is_colliding = Rect.colliderect(player, player2)
-        collision_tolerance = 20
-        if is_colliding:
-            if abs(player.top - player2.bottom) <= collision_tolerance and speed_y < 0:
+        ball_rect = obj.get_rect()
+        ball_old_rect = obj.get_old_rect()
+
+        if direction == 'horizontal':
+            #collision on the right
+            if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
+                player_rect.right = ball_rect.left
+
+            #collision on the left
+            if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
+                player_rect.left = ball_rect.right
+
+        if direction == 'vertical':
+            #collision on top
+            if player_rect.top <= ball_rect.bottom and player_old_rect.top >= ball_old_rect.bottom:
+                player_rect.top = ball_rect.bottom
+
+            #collision on bottom
+            if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
+                player_rect.bottom = ball_rect.top  
+
+    def handle_player_collision(self, other_player, direction):
+        player = self.get_rect()
+        player_old_rect = self.get_old_rect()
+        player2 = other_player.get_rect()
+        player2_old_rect = other_player.get_old_rect()
+
+        if direction == 'horizontal':
+            if player.right >= player2.left and player_old_rect.right <= player2_old_rect.left:
+                player.right = player2.left
+            if player.left <= player2.right and player_old_rect.left >= player2_old_rect.right:
+                player.left = player2.right
+        elif direction == 'vertical':
+            if player.top <= player2.bottom and player_old_rect.top >= player2_old_rect.bottom:
                 player.top = player2.bottom
                 self.set_speed_y(0)
-            if abs(player.right - player2.left) <= collision_tolerance and speed_x > 0:
-                player.right = player2.left
-                self.set_speed_x(0)
-            if abs(player.bottom - player2.top) <= collision_tolerance and speed_y > 0:
+            if player.bottom >= player2.top and player_old_rect.bottom <= player2_old_rect.top:
                 player.bottom = player2.top
                 self.set_speed_y(0)
-            if abs(player.left - player2.right) <= collision_tolerance and speed_x < 0:
-                player.left = player2.right
-                self.set_speed_x(0)
 
     def handle_ground_collision(self, ground: Ground):
         player = self.get_rect()
+        player_old_rect = self.get_old_rect()
         ground_rect = ground.get_rect()
-
-        is_colliding = Rect.colliderect(player, ground_rect)
-        collision_tolerance = 20
-        if is_colliding:
-            if abs(player.bottom - ground_rect.top) <= collision_tolerance:
-                player.bottom = ground_rect.top
-                self.set_speed_y(0)
-                self.__in_floor = True
+        
+        if player.bottom >= ground_rect.top and player_old_rect.bottom <= ground_rect.top:
+            player.bottom = ground_rect.top
+            self.set_speed_y(0)
+            self.__in_floor = True
 
     def handle_goalpost_collision(self, goalpost: Goalpost):
         player = self.get_rect()
+        player_old_rect = self.get_old_rect()
         goalpost_rect = goalpost.get_rect()
-        speed_x = self.get_speed_x()
-        speed_y = self.get_speed_y()
-        collision_tolerance = 20
-
-        is_colliding = Rect.colliderect(goalpost_rect, player)
-        if is_colliding:
-            if abs(player.top - goalpost_rect.bottom) <= collision_tolerance:
-                player.top = goalpost_rect.bottom
-                self.set_speed_y(0)
-            if abs(player.right - goalpost_rect.left) <= collision_tolerance:
-                player.right = goalpost_rect.left
-                self.set_speed_x(0)
-            if abs(player.bottom - goalpost_rect.top) <= collision_tolerance:
-                player.bottom = goalpost_rect.top
-                self.set_speed_y(0)
-            if abs(player.left - goalpost_rect.right) <= collision_tolerance:
-                player.left = goalpost_rect.right
-                self.set_speed_x(0)
+        
+        if player.top <= goalpost_rect.top and player_old_rect.top > goalpost_rect.top:
+            player.top = goalpost_rect.top
+            self.set_speed_y(0)
+        if player.bottom >= goalpost_rect.top and player_old_rect.bottom <= goalpost_rect.top:
+            player.bottom = goalpost_rect.top
+            self.set_speed_y(0)
 
     def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], scenario: Scenario, gravity: float, **args):
         controller = self.__controllers[self.__controller]
-        height = screen.get_height() - scenario.get_ground_height()
-        player = self.get_rect()
-
-        self.handle_gravity(height, gravity)
+        self.update_old_rect()
 
         for event in events:
             if event.type == KEYDOWN:
@@ -151,8 +182,16 @@ class Player(Character):
             gravity
             )
 
-        player.x += self.get_speed_x()
-        player.y += self.get_speed_y()
+    def update_pos(self, direction):
+        x = self.get_pos_x()
+        y = self.get_pos_y()
+
+        if direction == 'horizontal':
+            speed = self.get_speed_x()
+            self.set_pos(x + speed, y)
+        elif direction == 'vertical':
+            speed = self.get_speed_y()
+            self.set_pos(x, y + speed)
 
     def handle_gravity(self, height, gravity):
         player = self.get_rect()
