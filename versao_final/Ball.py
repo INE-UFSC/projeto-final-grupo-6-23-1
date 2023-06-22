@@ -20,7 +20,7 @@ class Ball(MovingObjects):
 
         #Note: Ball should not goes as faster as the player.width/2, this can cause
         #the ball to tunneling
-        self.__speed_limit = 10
+        self.__speed_limit = 15
 
         # Load image
         image_path = get_file_path('sprites', 'ball.png')
@@ -74,21 +74,22 @@ class Ball(MovingObjects):
 
     def collision_with_screen(self, width, height):
         ball = self.get_rect()
+        ball_old_rect = self.get_old_rect()
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
         
-        if ball.right >= width and speed_x > 0:
+        if ball.right >= width and ball_old_rect.right <= width:
             ball.right = width
             self.set_speed_x(speed_x * -1)
-        elif ball.left <= 0 and speed_x < 0:
+        elif ball.left <= 0 and ball_old_rect.left >= 0:
             ball.left = 0
             self.set_speed_x(speed_x * -1)
-        elif ball.bottom >= height and speed_y >= 0:
+
+        if ball.bottom >= height and ball_old_rect.bottom <= height:
             ball.bottom = height
-            self.set_speed_y(speed_y * -0.75)
-        elif ball.top <= 0 and speed_y < 0:
-            ball.top = 0
             self.set_speed_y(speed_y * -1)
+        elif ball.top <= 0 and ball_old_rect.top >= 0:
+            ball.top = 0
 
     def handle_friction(self):
         stop_rotating = 0.3
@@ -99,7 +100,6 @@ class Ball(MovingObjects):
             self.set_speed_x(self.get_speed_x() * self.__friction)
 
     def handle_player_collision(self, obj, direction):
-        speed_increase = 5
         ball_speed_x = self.get_speed_x()
         ball_speed_y = self.get_speed_y()
         ball_rect = self.get_rect()
@@ -109,15 +109,22 @@ class Ball(MovingObjects):
         player_old_rect = obj.get_old_rect()
 
         if direction == 'horizontal':
+            """ new_speed = 0
+            print(ball_speed_x)
+            if ball_speed_x == 0:
+                new_speed = abs(obj.get_speed_x()) + speed_increase
+                print(new_speed)
+            else:
+                new_speed = abs(ball_speed_x) + speed_increase  """
             #collision on the right
             if ball_rect.right >= player_rect.left and ball_old_rect.right <= player_old_rect.left:
                 ball_rect.right = player_rect.left
+                self.set_speed_x(ball_speed_x * -1)
 
             #collision on the left
             elif ball_rect.left <= player_rect.right and ball_old_rect.left >= player_old_rect.right:
                 ball_rect.left = player_rect.right
-
-            self.set_speed_x(ball_speed_x * -1)
+                self.set_speed_x(ball_speed_x * -1)
 
         if direction == 'vertical':
             #collision on the right
@@ -138,12 +145,13 @@ class Ball(MovingObjects):
         speed_y = self.get_speed_y()
 
         if direction == 'horizontal':
-            if ball_rect.right >= goalpost_rect.left and ball_old_rect.right <= goalpost_rect.left:
-                ball_rect.right = goalpost_rect.left
-                self.set_speed_x((speed_x) * -0.75)
-            if ball_rect.left <= goalpost_rect.right and ball_old_rect.left >= goalpost_rect.left:
-                ball_rect.left = goalpost_rect.right
-                self.set_speed_x((speed_x) * -0.75)
+            if ball_rect.top <= goalpost_rect.top and ball_rect.bottom >= goalpost_rect.top:
+                if ball_rect.right >= goalpost_rect.left and ball_old_rect.right <= goalpost_rect.left:
+                    ball_rect.right = goalpost_rect.left
+                    self.set_speed_x((speed_x) * -1)
+                if ball_rect.left <= goalpost_rect.right and ball_old_rect.left >= goalpost_rect.left:
+                    ball_rect.left = goalpost_rect.right
+                    self.set_speed_x((speed_x) * -1)
         elif direction == 'vertical':
             if ball_rect.bottom >= goalpost_rect.top and ball_old_rect.bottom <= goalpost_rect.top:
                 ball_rect.bottom = goalpost_rect.top
@@ -181,10 +189,17 @@ class Ball(MovingObjects):
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
 
-        if abs(speed_x) > self.__speed_limit:
-            self.set_speed_x(speed_x/speed_x * self.__speed_limit)
-        if abs(speed_y) > self.__speed_limit:
-            self.set_speed_y(speed_y/speed_y * self.__speed_limit)
+        if abs(speed_x) >= self.__speed_limit:
+            self.set_speed_x((speed_x/speed_x) * self.__speed_limit)
+        if abs(speed_y) >= self.__speed_limit:
+            self.set_speed_y((speed_y/speed_y) * self.__speed_limit)
+    
+    def kick(self, speed, collision_strengh):
+        #values of collision strengh subject to change
+        if speed > 0:
+            self.set_speed_x(collision_strengh)
+        elif speed < 0:
+            self.set_speed_x(-collision_strengh)
 
     def move(self, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
         width = screen.get_width()
@@ -198,6 +213,7 @@ class Ball(MovingObjects):
         rect = self.get_rect()
         resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
         surface.blit(resized_sprite, rect)
+
     
     def handle_events(self,events):
         pass

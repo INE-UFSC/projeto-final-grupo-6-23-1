@@ -44,8 +44,11 @@ class Player(Character):
         ]
     
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
+        #update horizontal position and check for collisions
         self.update_pos('horizontal')
         self.handle_collision('horizontal', game_objects)
+
+        #update vertical position and check for collisions
         self.handle_gravity(height, gravity)
         self.update_pos('vertical')
         self.handle_collision('vertical', game_objects)
@@ -91,6 +94,7 @@ class Player(Character):
             self.set_speed_y(0)
 
     def handle_ball_collision(self, obj: Ball, direction):
+        collision_strengh = 15
         player_rect = self.get_rect()
         player_old_rect = self.get_old_rect()
 
@@ -101,10 +105,12 @@ class Player(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
+                obj.kick(self.get_speed_x(), collision_strengh)
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
+                obj.kick(self.get_speed_x(), collision_strengh)
 
         if direction == 'vertical':
             #collision on top
