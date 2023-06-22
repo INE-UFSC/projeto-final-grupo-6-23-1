@@ -113,7 +113,8 @@ class Player(Character):
 
             #collision on bottom
             if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
-                player_rect.bottom = ball_rect.top  
+                player_rect.bottom = ball_rect.top
+                self.__in_floor = True  
 
     def handle_player_collision(self, other_player, direction):
         player = self.get_rect()
@@ -132,6 +133,7 @@ class Player(Character):
                 self.set_speed_y(0)
             if player.bottom >= player2.top and player_old_rect.bottom <= player2_old_rect.top:
                 player.bottom = player2.top
+                self.__in_floor = True
                 self.set_speed_y(0)
 
     def handle_ground_collision(self, ground: Ground):
@@ -154,6 +156,7 @@ class Player(Character):
             self.set_speed_y(0)
         if player.bottom >= goalpost_rect.top and player_old_rect.bottom <= goalpost_rect.top:
             player.bottom = goalpost_rect.top
+            self.__in_floor = True
             self.set_speed_y(0)
 
     def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], scenario: Scenario, gravity: float, **args):
