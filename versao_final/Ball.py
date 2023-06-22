@@ -7,7 +7,7 @@ import Player # needs to be imported like this, otherwise an error is thrown
 from CollisionList import CollisionList
 from pygame import Rect, event
 from pygame.locals import *
-from utils import get_image_path
+from utils import get_file_path
 
 class Ball(MovingObjects):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass: float):
@@ -23,7 +23,7 @@ class Ball(MovingObjects):
         self.__speed_limit = 10
 
         # Load image
-        image_path = get_image_path('sprites', 'ball.png')
+        image_path = get_file_path('sprites', 'ball.png')
         self.__sprite = pygame.image.load(image_path)
 
     def handle_gravity(self, gravity):

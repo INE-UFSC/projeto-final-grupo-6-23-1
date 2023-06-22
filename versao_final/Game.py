@@ -20,7 +20,6 @@ class Game:
     def start_game(self):
         pygame.init()
         self.__running = True
-        pygame.time.set_timer(pygame.USEREVENT, 1000)
         self.loop()
 
     def loop(self):
@@ -28,7 +27,7 @@ class Game:
             self.__timer.tick(self.__fps)
             events = self.handle_events()
             self.process_input(events)
-            self.update_time(events)
+            self.__match.handle_events(events,self.__screen)
             self.draw_frame()
             self.render()
 
@@ -44,9 +43,6 @@ class Game:
 
     def process_input(self, events):
         self.__match.process_input(events, self.__screen)
-
-    def update_time(self, events):
-        self.__match.update_time(events)
 
     def draw_frame(self):
         self.__match.draw(pygame, self.__screen)

@@ -3,7 +3,7 @@ from pygame import Rect, event
 import pygame
 import Ball
 from pygame.locals import *
-from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_image_path
+from utils import BUFF_APPLIED, DEBUFF_APPLIED, RESET_STATE, get_file_path
 from GameObject import GameObject
 from Ground import Ground
 from Goalpost import Goalpost
@@ -20,7 +20,7 @@ class Player(Character):
         self.__in_floor = False
 
         # Load image
-        image_path = get_image_path('sprites', 'players', sprite)
+        image_path = get_file_path('sprites', 'players', sprite)
         self.__sprite = pygame.image.load(image_path)
 
         # Inverts image horizontally if not player one (player in the left)
@@ -213,10 +213,14 @@ class Player(Character):
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height * 2))
                 self.set_rect(new_rect_applied)
         
-            elif event.type == DEBUFF_APPLIED  and self == event.target:
+            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'size_down_player' and self == event.target:
                 player_min = self.get_rect().height * 0.5
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
+
+            #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
+
+
 
             if event.type == RESET_STATE and self == event.target:
                 if event.collectable_type == 'size_up_player':

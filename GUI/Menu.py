@@ -28,7 +28,7 @@ class Menu:
         
     def play_music(self): 
         pygame.mixer.init()
-        pygame.mixer.music.load("C://Users//User//Desktop//projeto_final_poo_2//projeto-final-grupo-6-23-1//GUI//Music//Rednek_-_They_Call_Me_(Radio_Mix_a.k.a._Popstep_Remix)_-_PES_2013_Soundtrack(256k)_052315 (online-audio-converter.com).wav")
+        pygame.mixer.music.load("C://Users//User//Desktop//projeto_final//projeto-final-grupo-6-23-1//GUI//Music//Rednek_-_They_Call_Me_(Radio_Mix_a.k.a._Popstep_Remix)_-_PES_2013_Soundtrack(256k)_052315 (online-audio-converter.com).wav")
         pygame.mixer.music.play()
 
     def start(self):
