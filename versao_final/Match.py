@@ -121,7 +121,7 @@ class Match:
         if gp == 'right':
             goal_x = surface.get_width() - goal_width
 
-        return goal_width, goal_height, goal_x, goal_y
+        return goal_width, goal_height, goal_x, goal_y, gp
 
     def handle_events(self, events, surface):
         for event in events:
