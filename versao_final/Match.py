@@ -21,8 +21,8 @@ class Match:
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
         pygame.mixer.music.play(-1)
         self.__game_objects: list[GameObject] = [
-            Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=False),
-            Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=True),
+            Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
+            Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
             #Debuff(20,20, 150, 50, 10),
             #Buff(20,20,400,50,10),
@@ -86,9 +86,9 @@ class Match:
         for obj in self.__game_objects:
             if isinstance(obj, Player):
                 if self.__game_objects.index(obj) == 0:
-                    obj.draw(pg, surface, 0, 255 , 255)
+                    obj.draw(pg, surface, 0, 0 , 0)
                 else:
-                    obj.draw(pg, surface, 255, 255 , 0)
+                    obj.draw(pg, surface, 0, 0 , 0)
             else:
                 obj.draw(pg, surface)
 
