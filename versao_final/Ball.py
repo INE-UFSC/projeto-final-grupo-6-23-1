@@ -17,6 +17,7 @@ class Ball(MovingObjects):
         self.last_touched_player = None
         self.__stop_bounce = 3
         self.__in_ground = False
+        self.__goal = False
 
         #Note: Ball should not goes as faster as the player.width/2, this can cause
         #the ball to tunneling
@@ -60,6 +61,7 @@ class Ball(MovingObjects):
                     self.handle_player_collision(obj, direction)
                 elif isinstance(obj, Goalpost):
                     self.handle_goalpost_collision(obj, direction)
+                    self.__goal = True
 
         elif direction == 'vertical':
             collision_list = CollisionList(self, game_objects)
@@ -149,13 +151,13 @@ class Ball(MovingObjects):
                 if ball_rect.right >= goalpost_rect.left and ball_old_rect.right <= goalpost_rect.left:
                     ball_rect.right = goalpost_rect.left
                     self.set_speed_x((speed_x) * -1)
-                if ball_rect.left <= goalpost_rect.right and ball_old_rect.left >= goalpost_rect.left:
+                if ball_rect.left <= goalpost_rect.right and ball_old_rect.left >= goalpost_rect.right:
                     ball_rect.left = goalpost_rect.right
                     self.set_speed_x((speed_x) * -1)
         elif direction == 'vertical':
             if ball_rect.bottom >= goalpost_rect.top and ball_old_rect.bottom <= goalpost_rect.top:
                 ball_rect.bottom = goalpost_rect.top
-                self.set_speed_y(speed_y * -0.75)
+                self.set_speed_y(speed_y * -1)
                 self.handle_stop_bounce(goalpost_rect.top)
 
     def handle_ground_collision(self, ground: Ground):
@@ -214,6 +216,14 @@ class Ball(MovingObjects):
         resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
         surface.blit(resized_sprite, rect)
 
-    
+    def set_goal(self, goal: bool):
+        self.__goal = goal
+
+    def get_goal(self):
+        return self.__goal
+
+    def set_in_ground(self, in_ground: bool):
+        self.__in_ground = in_ground
+
     def handle_events(self,events):
         pass

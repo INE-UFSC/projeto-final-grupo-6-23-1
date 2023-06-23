@@ -21,9 +21,9 @@ class Match:
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
         pygame.mixer.music.play(-1)
         self.__game_objects: list[GameObject] = [
-            Player(40, 50, 0, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=False),
-            Player(40, 50, 80, 170, 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=True),
-            Ball(20, 20, 40, 0, 20, 0, 1.5),
+            Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=False),
+            Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=True),
+            Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
             #Debuff(20,20, 150, 50, 10),
             #Buff(20,20,400,50,10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
@@ -46,7 +46,7 @@ class Match:
             text = font.render(str(self.__time), False, 'White')
         else:
             text = font.render('Time Up!', False, 'White')
-            pygame.quit()
+            #pygame.quit()
         return text
 
     def draw_score(self):
@@ -92,10 +92,10 @@ class Match:
                 obj.draw(pg, surface)
 
 
-        #surface.blit(self.draw_time(), (300,5))
+        surface.blit(self.draw_time(), (300,5))
 
-        #surface.blit(self.draw_score()[0], (0, 5))
-        #surface.blit(self.draw_score()[1], (615, 5))
+        surface.blit(self.draw_score()[0], (0, 5))
+        surface.blit(self.draw_score()[1], (615, 5))
 
     def check_goal(self):
         #can be implemented with custom event, ex
@@ -136,7 +136,7 @@ class Match:
     def update_score(self):
         for obj in self.__game_objects:
             if isinstance(obj, Ball):
-                if obj.get_pos_y() < 288 and obj.get_pos_y() > 144:
+                if obj.get_goal() == True:
                     if obj.get_pos_x() <= 128:
                         self.__game_objects[0].add_goals()
                         self.reset()
@@ -147,13 +147,18 @@ class Match:
         score_player1 = self.__game_objects[0].get_goals()
         score_player2 = self.__game_objects[1].get_goals()
         if score_player1==7 or score_player2==7:
-            pygame.quit()
+            #pygame.quit()
+            pass
         return [score_player1, score_player2]
     
     def reset(self):
         self.__game_objects[0].set_pos(270, 0)
         self.__game_objects[1].set_pos(350, 0)
         self.__game_objects[2].set_pos(310, 0)
+        self.__game_objects[2].set_goal(False)
+        self.__game_objects[2].set_in_ground(False)
+        self.__game_objects[2].set_speed_x(0)
+        self.__game_objects[2].set_speed_y(0)
     
     def create_rand_collectable(self,surface):
         collectables_count = sum(isinstance(obj, Collectables) for obj in self.__game_objects)
