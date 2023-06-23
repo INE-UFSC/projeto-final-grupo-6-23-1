@@ -4,7 +4,7 @@ from HowToPlay import HowToPlay
 from New_Game import New_Game
 from Text import Text
 import pygame
-
+from utils import get_file_path
 
 class Menu:
     def __init__(self):
@@ -28,7 +28,7 @@ class Menu:
         
     def play_music(self): 
         pygame.mixer.init()
-        pygame.mixer.music.load("C://Users//User//Desktop//projeto_final//projeto-final-grupo-6-23-1//GUI//Music//Rednek_-_They_Call_Me_(Radio_Mix_a.k.a._Popstep_Remix)_-_PES_2013_Soundtrack(256k)_052315 (online-audio-converter.com).wav")
+        pygame.mixer.music.load(get_file_path('sprites', 'sound', 'music.wav'))
         pygame.mixer.music.play()
 
     def start(self):

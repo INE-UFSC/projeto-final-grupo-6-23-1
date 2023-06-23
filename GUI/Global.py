@@ -4,11 +4,13 @@ from Credits import Credits
 from HowToPlay import HowToPlay
 from New_Game import New_Game
 from Text import Text
+from Game import Game
 import pygame
+from Restart import Restart
 
 class Global:
     def __init__(self):
-        self.__screens = [Menu, Credits, HowToPlay, New_Game,Text,"END"]
+        self.__screens = [Menu, Credits, HowToPlay, New_Game,Text,"END", Restart]
         self.__screen_actually = self.__screens[0]
 
     def events(self):
@@ -140,13 +142,33 @@ class Global:
                     print("")
 
                 elif event == "NEXT":
-                    print("")
-            
+                    cfg = {"":""} #to do - implement game cfg file that can be editted in menu
+                    new_game._New_Game__window.close()
+                    new_game = Game(cfg)
+                    
+                    new_game.start_game()
+                                
                 elif event == sg.WIN_CLOSED:
                     self.__screen_actually = self.__screens[5]
         
             elif self.__screen_actually == self.__screens[5]:
                 break
+                
+            elif self.__screen_actually == self.__screen[6]:
+                event, values = restart._Restart__window.read()
+                if event == "RESTART":
+                    restart._Restart__window.close()
+                    cfg = {"":""} #to do - implement game cfg file that can be editted in menu
+                    new_game._New_Game__window.close()
+                    new_game = Game(cfg)
+                    
+                    new_game.start_game()
 
-a = Global()
-a.events()
+                elif event == "BACK TO MENU":
+                    restart._Restart__window.close()
+                    self.__screen_actually = self.__screens[0]
+                    menu = Menu()
+                                
+
+start_game = Global()
+start_game.events()
