@@ -220,7 +220,7 @@ class Player(Character):
         else:
             self.set_speed_y(0)
 
-    def draw(self, pg: pygame, surface: pygame.Surface, r: int, g: int, b: int):
+    def draw(self, pg: pygame, surface: pygame.Surface):
         rect = self.get_rect()
         resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
         surface.blit(resized_sprite, rect)
@@ -237,8 +237,6 @@ class Player(Character):
                 self.set_rect(new_rect_debuff)
 
             #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
-
-
 
             if event.type == RESET_STATE and self == event.target:
                 if event.collectable_type == 'size_up_player':

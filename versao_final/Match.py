@@ -12,6 +12,7 @@ from Scenario import Scenario
 from Ground import Ground
 import random
 from utils import *
+from Foot import Foot
 
 class Match:
     def __init__(self, surface):
@@ -24,8 +25,6 @@ class Match:
             Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
             Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
-            #Debuff(20,20, 150, 50, 10),
-            #Buff(20,20,400,50,10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
@@ -70,47 +69,21 @@ class Match:
                 obj.check_collision(self.__game_objects)
 
             obj.handle_events(events)
-    
+
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         surface.fill((0, 0, 0)) #it clears the previous frame to draw a new one
-        """ background = pygame.image.load(get_image_path('sprites','stages','test','background.png'))
-        ground = pygame.image.load(get_image_path('sprites','stages','test','ground.png'))
-        surface.blit(background, (0,0))
-        surface.blit(ground, (0,288)) """
 
        # print("---------------")
         #print(len(self.__game_objects))
         #print(self.__game_objects)
         self.__scenario.draw_background(surface)
         for obj in self.__game_objects:
-            if isinstance(obj, Player):
-                if self.__game_objects.index(obj) == 0:
-                    obj.draw(pg, surface, 0, 0 , 0)
-                else:
-                    obj.draw(pg, surface, 0, 0 , 0)
-            else:
-                obj.draw(pg, surface)
-
+            obj.draw(pg, surface)
 
         surface.blit(self.draw_time(), (300,5))
-
         surface.blit(self.draw_score()[0], (0, 5))
         surface.blit(self.draw_score()[1], (615, 5))
-
-    def check_goal(self):
-        #can be implemented with custom event, ex
-        """
-        suppose that the event is called GOAL, and it's implemented as such:
-            GOAL = pygame.USEREVENT + 1
-
-            it can be send to the events list in pygame using:
-            ev = pygame.event.Event(GOAL)
-            pygame.event.post(ev)
-
-            then check_goal() can receive events and then handle the pygame event GOAL
-        """
-        pass
 
     # calcs initial Goalpost parameters
     # gp = which goalpost -> 'left' or 'right'
@@ -151,7 +124,7 @@ class Match:
             #pygame.quit()
             pass
         return [score_player1, score_player2]
-    
+
     def reset(self):
         self.__game_objects[0].set_pos(270, 0)
         self.__game_objects[1].set_pos(350, 0)
