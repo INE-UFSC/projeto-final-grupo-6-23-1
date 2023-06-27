@@ -15,7 +15,7 @@ from utils import *
 
 class Match:
     def __init__(self, surface):
-        self.__scenario: Scenario = Scenario()
+        self.__scenario: Scenario = Scenario(surface)
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
@@ -82,6 +82,7 @@ class Match:
        # print("---------------")
         #print(len(self.__game_objects))
         #print(self.__game_objects)
+        self.__scenario.draw_background(surface)
         for obj in self.__game_objects:
             if isinstance(obj, Player):
                 if self.__game_objects.index(obj) == 0:
@@ -121,7 +122,7 @@ class Match:
         if gp == 'right':
             goal_x = surface.get_width() - goal_width
 
-        return goal_width, goal_height, goal_x, goal_y
+        return goal_width, goal_height, goal_x, goal_y, gp
 
     def handle_events(self, events, surface):
         for event in events:
