@@ -8,6 +8,8 @@ BUFF_APPLIED = USEREVENT + 1
 DEBUFF_APPLIED = USEREVENT + 2
 RESET_STATE = USEREVENT + 3
 CREATE_COLLECTABLE = USEREVENT + 4
+ERASE_COLLECTABLES = USEREVENT + 5
+ALLOW_CREATE_COLLECTABLE = USEREVENT + 6
 
 # exclude_type: parameter that allows you to choose get all objects but the given type
 def get_obj_of_type(obj_list: list[GameObject], obj_type, exclude_type = False) -> list:

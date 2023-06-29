@@ -14,7 +14,7 @@ class Ball(MovingObjects):
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass)
         self.__retention = 0.7 # variable that retains ball momentum when bouncing
         self.__friction = 0.95 # ball friction against soil
-        self.last_touched_player = None
+        self.__last_touched_player = None
         self.__stop_bounce = 3
         self.__in_ground = False
         self.__goal = False
@@ -109,6 +109,9 @@ class Ball(MovingObjects):
 
         player_rect = obj.get_rect()
         player_old_rect = obj.get_old_rect()
+        print(obj)
+        self.__last_touched_player = obj
+
 
         if direction == 'horizontal':
             """ new_speed = 0
@@ -173,7 +176,7 @@ class Ball(MovingObjects):
             self.handle_stop_bounce(ground_rect.top)
 
     def get_last_touched(self):
-        return self.last_touched_player
+        return self.__last_touched_player
     
     def update_pos(self, direction):
         x = self.get_pos_x()
@@ -196,7 +199,9 @@ class Ball(MovingObjects):
         if abs(speed_y) >= self.__speed_limit:
             self.set_speed_y((speed_y/speed_y) * self.__speed_limit)
     
-    def kick(self, speed, collision_strengh):
+    def kick(self, speed, collision_strengh, player):
+
+        self.__last_touched_player = player
         #values of collision strengh subject to change
         if speed > 0:
             self.set_speed_x(collision_strengh)

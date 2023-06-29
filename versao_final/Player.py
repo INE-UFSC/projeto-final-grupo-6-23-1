@@ -106,12 +106,12 @@ class Player(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
-                obj.kick(self.get_speed_x(), collision_strengh)
+                obj.kick(self.get_speed_x(), collision_strengh, self)
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
-                obj.kick(self.get_speed_x(), collision_strengh)
+                obj.kick(self.get_speed_x(), collision_strengh, self)
 
         if direction == 'vertical':
             #collision on top
@@ -227,7 +227,9 @@ class Player(Character):
 
     def handle_events(self, events: event):
         for event in events:
-            if event.type == BUFF_APPLIED  and self == event.target:
+            if event.type == BUFF_APPLIED  and event.collectable_type == 'size_up_player' and self == event.target:
+                height = event.target.get_rect().height
+                self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height * 2))
                 self.set_rect(new_rect_applied)
         
@@ -243,4 +245,7 @@ class Player(Character):
                    event.target.get_rect().height *= 0.5 
                 
                 elif event.collectable_type == 'size_down_player':
+                    height = event.target.get_rect().height
+                    self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                     event.target.get_rect().height *=2
+                    

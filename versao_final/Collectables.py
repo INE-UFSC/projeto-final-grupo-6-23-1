@@ -3,6 +3,7 @@ from GameObject import GameObject
 import pygame
 import random
 from pygame import Rect
+from utils import *
 class Collectables(GameObject, ABC):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
         super().__init__(width, height, pos_x, pos_y)
@@ -34,6 +35,7 @@ class Collectables(GameObject, ABC):
     def get_type(self) -> str:
         return self.type
 
+
     def set_to_random_position(self, objects: list[GameObject], screen: pygame.surface.Surface):
         height = screen.get_height()
         widht = screen.get_width()
@@ -52,3 +54,5 @@ class Collectables(GameObject, ABC):
         else:
             self.set_to_random_position(objects, screen)
         
+    def erase_collectables(self):
+        pygame.event.post(pygame.event.Event(ERASE_COLLECTABLES))
