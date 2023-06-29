@@ -6,11 +6,19 @@ from GameObject import GameObject
 from Goalpost import Goalpost
 from Ball import Ball
 from Player import Player
-from utils import DEBUFF_APPLIED, RESET_STATE
+from utils import *
 
 class Debuff(Collectables):
-    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float, type: str):
-        super().__init__(width, height, pos_x, pos_y,duration, type)
+    def __init__(self, width: int, height: int, pos_x: int, pos_y: int, duration: float):
+        self.__sprite = None
+        self.__debuffs = {
+                        'size_down_player': get_file_path('sprites', 'collectables', 'size_down_player.png'),
+                        'size_up_goalpost': get_file_path('sprites', 'collectables', 'size_up_goalpost.png'),
+                        'frozen_player': get_file_path('sprites', 'collectables', 'fronzen.png')
+                        
+                        }
+        super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
+        
 
     def check_collision(self, objects: list[GameObject]):
         collided = False
@@ -19,6 +27,7 @@ class Debuff(Collectables):
             if Rect.colliderect(self.get_rect(), obj.get_rect()):
                 if isinstance(obj, Ball):
                     self.apply_debuff(obj)
+                    self.erase_collectables()
                     collided = True
 
                 """ elif isinstance(obj, Player):
@@ -35,25 +44,28 @@ class Debuff(Collectables):
 
         return False
     #Generate a random debuff for the match
-    @classmethod
     def gen_rand_debuff(self) -> str:
-        debuffs = ['size_down_player','frozen']
-        return random.choice(debuffs)
+        debuffs_types = list(self.__debuffs.keys())
+        debuff_type = random.choice(debuffs_types)
+        self.__sprite = pygame.image.load(self.__debuffs[debuff_type])
+        return debuff_type
 
     def apply_debuff(self, obj: Ball):
         if self.get_type() == 'size_down_player':
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_player"), 10000,1)
-            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))
-        elif self.get_type() == 'fronzen':
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player, collectable_type = "size_down_player"))
+        ''''elif self.get_type() == 'fronzen':
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="fronzen"), 10000,1)
-            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))'''
     
     def handle_events(self,events):
         pass
 
     def draw(self, pg: pygame, surface: pygame.Surface):
-        pg.draw.rect(surface, (255, 0, 0), self.get_rect())
+        rect = self.get_rect()
+        resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
+        surface.blit(resized_sprite, rect)
 
         

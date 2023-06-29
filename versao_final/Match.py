@@ -15,8 +15,9 @@ from utils import *
 from Foot import Foot
 
 class Match:
+
     def __init__(self, surface):
-        self.__scenario: Scenario = Scenario(surface)
+        self.__scenario: Scenario = Scenario(surface, 'desert')
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
@@ -25,6 +26,7 @@ class Match:
             Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
             Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
+            Buff(20,20,370,self.__scenario.get_ground_height()+200, 10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
@@ -33,6 +35,7 @@ class Match:
         self.__gravity = 0.6
         pygame.time.set_timer(pygame.USEREVENT, 1000)
         pygame.time.set_timer(CREATE_COLLECTABLE, 5000)
+        self.__allow_collectable_creation = True
         #self.__collectable_timer = 10
 
     """ def check_collisions(self):
@@ -115,6 +118,15 @@ class Match:
                 self.update_time()
             elif event.type == CREATE_COLLECTABLE:
                 self.create_rand_collectable(surface)
+            elif event.type == ERASE_COLLECTABLES:
+                for i,object in enumerate(self.__game_objects):
+                    if isinstance(object, Collectables):
+                        self.__game_objects[i].remove()
+            elif event.type == RESET_STATE:
+                self.__allow_collectable_creation = True
+            elif event.type == BUFF_APPLIED or event.type == DEBUFF_APPLIED:
+                self.__allow_collectable_creation = False
+
 
     def update_time(self):
         self.__time -= 1
@@ -148,15 +160,13 @@ class Match:
     
     def create_rand_collectable(self,surface):
         collectables_count = sum(isinstance(obj, Collectables) for obj in self.__game_objects)
-        if collectables_count >= 3:
+        if collectables_count >= 2 or self.__allow_collectable_creation == False:
             return
         chose_collectable = collectables_count % 2
         new_collectable = None
         if chose_collectable == 0:
-            buff_type = Buff.gen_rand_buff()
-            new_collectable = Buff(20,20,0,0,10,buff_type)
+            new_collectable = Buff(20,20,0,0,10)
         else:
-            debuff_type = Debuff.gen_rand_debuff()
-            new_collectable = Debuff(20,20,0,0,10,debuff_type)
+            new_collectable = Debuff(20,20,0,0,10)
         new_collectable.set_to_random_position(self.__game_objects, screen=surface)
         self.__game_objects.append(new_collectable)
