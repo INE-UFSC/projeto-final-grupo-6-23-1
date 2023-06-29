@@ -54,9 +54,17 @@ class Match:
     def draw_score(self):
         scores = self.update_score()
         font = pygame.font.Font(None, 40)
-        text_player1 = font.render(str(scores[0]), False, 'White')
-        text_player2 = font.render(str(scores[1]), False, 'White')
-        return [text_player1, text_player2]
+        if scores[0]<7 and scores[1]<7:
+            text_player1 = font.render(str(scores[0]), False, 'White')
+            text_player2 = font.render(str(scores[1]), False, 'White')
+            return [text_player1, text_player2]
+        else:
+            if scores[0]<7:
+                winner = "Player 1 "
+            else:
+                winner = "Player 2 "
+            text_winner = font.render(winner + "won", False, 'white')
+            return [text_winner]
 
     def process_input(self, events, screen):
         for obj in self.__game_objects:
@@ -84,9 +92,13 @@ class Match:
         for obj in self.__game_objects:
             obj.draw(pg, surface)
 
-        surface.blit(self.draw_time(), (300,5))
-        surface.blit(self.draw_score()[0], (0, 5))
-        surface.blit(self.draw_score()[1], (615, 5))
+        scores = self.update_score()
+        if scores[0]<7 and scores[1]<7:
+            surface.blit(self.draw_time(), (300,5))
+            surface.blit(self.draw_score()[0], (0, 5))
+            surface.blit(self.draw_score()[1], (615, 5))
+        else:
+            surface.blit(self.draw_score()[0], (250,5))
 
     # calcs initial Goalpost parameters
     # gp = which goalpost -> 'left' or 'right'
