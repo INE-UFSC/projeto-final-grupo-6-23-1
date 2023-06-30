@@ -10,9 +10,9 @@ class Goalpost(GameObject):
         # Load image
         image_path = get_file_path('sprites', 'goalpost.png')
         self.__sprite = pygame.image.load(image_path)
-
+        self.__side = side
         # Inverts image horizontally if not player one (player in the left)
-        if side == 'right':
+        if self.__side == 'right':
             self.__sprite = pygame.transform.flip(self.__sprite, True, False)
     
     def handle_events(self,events: event):
@@ -45,3 +45,6 @@ class Goalpost(GameObject):
         rect = self.get_rect()
         resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
         surface.blit(resized_sprite, rect)
+
+    def get_side(self):
+        return self.__side

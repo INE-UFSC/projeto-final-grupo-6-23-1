@@ -32,7 +32,7 @@ class Ball(MovingObjects):
             speed_y = self.get_speed_y()
             self.set_speed_y(speed_y + gravity)
 
-    def handle_stop_bounce(self, limiter):
+    def handle_stop_bounce(self, limiter, allow_in_ground_update = True):
         speed_y = self.get_speed_y()
         ball = self.get_rect()
 
@@ -40,22 +40,24 @@ class Ball(MovingObjects):
             self.set_speed_y(speed_y * self.__retention)
         elif abs(speed_y) <= self.__stop_bounce and ball.bottom <= limiter:
             self.set_speed_y(0)
-            self.__in_ground = True
+            if allow_in_ground_update:
+                self.__in_ground = True
 
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):        
-        self.handle_friction() 
         self.update_pos('horizontal')
+        self.collision_with_screen(width, height, 'horizontal')
+        self.handle_friction() 
         self.handle_collision('horizontal', game_objects)
-        self.handle_gravity(gravity)
+        
         self.update_pos('vertical')
+        self.collision_with_screen(width, height, 'vertical')
+        self.handle_gravity(gravity)
         self.handle_collision('vertical', game_objects)
-
-        self.collision_with_screen(width, height)
 
     def handle_collision(self, direction, game_objects):
         if direction == 'horizontal':
             collision_list = CollisionList(self, game_objects)
-
+            
             for obj in collision_list.get_collisions():
                 if isinstance(obj, Player.Player):
                     self.handle_player_collision(obj, direction)
@@ -74,24 +76,25 @@ class Ball(MovingObjects):
                 elif isinstance(obj, Goalpost):
                     self.handle_goalpost_collision(obj, direction)
 
-    def collision_with_screen(self, width, height):
+    def collision_with_screen(self, width, height, direction):
         ball = self.get_rect()
         ball_old_rect = self.get_old_rect()
         speed_x = self.get_speed_x()
         speed_y = self.get_speed_y()
         
-        if ball.right >= width and ball_old_rect.right <= width:
-            ball.right = width
-            self.set_speed_x(speed_x * -1)
-        elif ball.left <= 0 and ball_old_rect.left >= 0:
-            ball.left = 0
-            self.set_speed_x(speed_x * -1)
-
-        if ball.bottom >= height and ball_old_rect.bottom <= height:
-            ball.bottom = height
-            self.set_speed_y(speed_y * -1)
-        elif ball.top <= 0 and ball_old_rect.top >= 0:
-            ball.top = 0
+        if direction == 'horizontal':
+            if ball.right >= width and ball_old_rect.right <= width:
+                ball.right = width
+                self.set_speed_x(speed_x * -1)
+            elif ball.left <= 0 and ball_old_rect.left >= 0:
+                ball.left = 0
+                self.set_speed_x(speed_x * -1)
+        elif direction == 'vertical':
+            if ball.bottom >= height and ball_old_rect.bottom <= height:
+                ball.bottom = height
+                self.set_speed_y(speed_y * -1)
+            elif ball.top <= 0 and ball_old_rect.top >= 0:
+                ball.top = 0
 
     def handle_friction(self):
         stop_rotating = 0.3
@@ -109,18 +112,9 @@ class Ball(MovingObjects):
 
         player_rect = obj.get_rect()
         player_old_rect = obj.get_old_rect()
-        print(obj)
         self.__last_touched_player = obj
 
-
         if direction == 'horizontal':
-            """ new_speed = 0
-            print(ball_speed_x)
-            if ball_speed_x == 0:
-                new_speed = abs(obj.get_speed_x()) + speed_increase
-                print(new_speed)
-            else:
-                new_speed = abs(ball_speed_x) + speed_increase  """
             #collision on the right
             if ball_rect.right >= player_rect.left and ball_old_rect.right <= player_old_rect.left:
                 ball_rect.right = player_rect.left
@@ -161,7 +155,13 @@ class Ball(MovingObjects):
             if ball_rect.bottom >= goalpost_rect.top and ball_old_rect.bottom <= goalpost_rect.top:
                 ball_rect.bottom = goalpost_rect.top
                 self.set_speed_y(speed_y * -1)
-                self.handle_stop_bounce(goalpost_rect.top)
+                self.handle_stop_bounce(goalpost_rect.top, False)
+                #when ball is stuck above goalposts it gains some speed to not get stuck
+                if self.get_speed_x() == 0:
+                    if goalpost.get_side() == 'right':
+                        self.set_speed_x(-1)
+                    elif goalpost.get_side() == 'left':
+                        self.set_speed_x(1)
 
     def handle_ground_collision(self, ground: Ground):
         ball_rect = self.get_rect()
@@ -195,9 +195,9 @@ class Ball(MovingObjects):
         speed_y = self.get_speed_y()
 
         if abs(speed_x) >= self.__speed_limit:
-            self.set_speed_x((speed_x/speed_x) * self.__speed_limit)
+            self.set_speed_x((speed_x/abs(speed_x)) * self.__speed_limit)
         if abs(speed_y) >= self.__speed_limit:
-            self.set_speed_y((speed_y/speed_y) * self.__speed_limit)
+            self.set_speed_y((speed_y/abs(speed_y)) * self.__speed_limit)
     
     def kick(self, speed, collision_strengh, player):
 

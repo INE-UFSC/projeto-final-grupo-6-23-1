@@ -13,10 +13,10 @@ class Debuff(Collectables):
         self.__sprite = None
         self.__debuffs = {
                         'size_down_player': get_file_path('sprites', 'collectables', 'size_down_player.png'),
-                        'size_up_goalpost': get_file_path('sprites', 'collectables', 'size_up_goalpost.png'),
-                        'frozen_player': get_file_path('sprites', 'collectables', 'fronzen.png')
+                        'size_up_goalpost': get_file_path('sprites', 'collectables', 'size_up_goalpost.png')
                         
                         }
+        #                'frozen_player': get_file_path('sprites', 'collectables', 'fronzen.png')
         super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
         
 

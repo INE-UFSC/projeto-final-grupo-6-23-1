@@ -15,9 +15,8 @@ from utils import *
 from Foot import Foot
 
 class Match:
-
     def __init__(self, surface):
-        self.__scenario: Scenario = Scenario(surface, 'desert')
+        self.__scenario: Scenario = Scenario(surface)
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
@@ -36,11 +35,6 @@ class Match:
         pygame.time.set_timer(pygame.USEREVENT, 1000)
         pygame.time.set_timer(CREATE_COLLECTABLE, 5000)
         self.__allow_collectable_creation = True
-        #self.__collectable_timer = 10
-
-    """ def check_collisions(self):
-        for game_obj in self.__game_objects:
-            game_obj.check_collisions(self.__game_objects) """
 
     def draw_time(self):
         font = pygame.font.Font(None, 40)
