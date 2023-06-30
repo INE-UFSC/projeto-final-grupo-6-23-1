@@ -177,21 +177,13 @@ class Player(Character):
                     self.__in_floor = False
                 if event.key == controller["LEFT"]:
                     self.set_speed_x(-self.__default_speed)
-                    if self.__is_player_one == True:
-                        self.__sprite = pygame.transform.flip(self.__sprite, True, False)
                 if event.key == controller["RIGHT"]:
                     self.set_speed_x(self.__default_speed)
-                    if self.__is_player_one == False:
-                        self.__sprite = pygame.transform.flip(self.__sprite, True, False)
             elif event.type == KEYUP:
                 if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
                     self.set_speed_x(0)
-                    if self.__is_player_one == False:
-                        self.__sprite = pygame.transform.flip(self.__sprite, True, False)
                 elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
                     self.set_speed_x(0)
-                    if self.__is_player_one == True:
-                        self.__sprite = pygame.transform.flip(self.__sprite, True, False)
 
         self.check_collisions(
             screen.get_width(), 
