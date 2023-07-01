@@ -267,3 +267,5 @@ class Player(Character):
                     self.__current_sprite == self.__sprite
         
                     
+    def get_player_one(self):
+        return self.__is_player_one
