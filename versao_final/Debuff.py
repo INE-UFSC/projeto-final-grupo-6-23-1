@@ -17,7 +17,6 @@ class Debuff(Collectables):
                         'frozen_player': get_file_path('sprites', 'collectables', 'frozen_player.png')
                         
                         }
-        #                'frozen_player': get_file_path('sprites', 'collectables', 'fronzen.png')
         super().__init__(width, height, pos_x, pos_y,duration, self.gen_rand_debuff())
         
 
@@ -56,7 +55,7 @@ class Debuff(Collectables):
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_player"), 10000,1)
             pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player, collectable_type = "size_down_player"))
-        elif self.get_type() == 'fronzen_player':
+        elif self.get_type() == 'frozen_player':
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="frozen_player"), 10000,1)
             pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player, collectable_type = "frozen_player"))

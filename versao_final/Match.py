@@ -23,8 +23,8 @@ class Match:
             Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
             Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
-            #Debuff(20,20,370,self.__scenario.get_ground_height()+200, 10),
-            Buff(20,20,370,self.__scenario.get_ground_height()+200, 10),
+            Debuff(20,20,370,self.__scenario.get_ground_height()+200, 10),
+            #Buff(20,20,370,self.__scenario.get_ground_height()+200, 10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
