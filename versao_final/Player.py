@@ -19,6 +19,7 @@ class Player(Character):
         self.__default_jump_speed = 8
         self.__in_floor = False
         self.__is_player_one = is_player_one
+        self.__is_frozen = False
 
         # Load image
         image_path = get_file_path('sprites', 'players', sprite)
@@ -173,20 +174,21 @@ class Player(Character):
         controller = self.__controllers[self.__controller]
         self.update_old_rect()
 
-        for event in events:
-            if event.type == KEYDOWN:
-                if event.key == controller["UP"] and self.__in_floor == True:
-                    self.set_speed_y(-self.__default_jump_speed)
-                    self.__in_floor = False
-                if event.key == controller["LEFT"]:
-                    self.set_speed_x(-self.__default_speed)
-                if event.key == controller["RIGHT"]:
-                    self.set_speed_x(self.__default_speed)
-            elif event.type == KEYUP:
-                if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
-                    self.set_speed_x(0)
-                elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
-                    self.set_speed_x(0)
+        if not self.__is_frozen:
+            for event in events:
+                if event.type == KEYDOWN:
+                    if event.key == controller["UP"] and self.__in_floor == True:
+                        self.set_speed_y(-self.__default_jump_speed)
+                        self.__in_floor = False
+                    if event.key == controller["LEFT"]:
+                        self.set_speed_x(-self.__default_speed)
+                    if event.key == controller["RIGHT"]:
+                        self.set_speed_x(self.__default_speed)
+                elif event.type == KEYUP:
+                    if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
+                        self.set_speed_x(0)
+                    elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
+                        self.set_speed_x(0)
 
         self.check_collisions(
             screen.get_width(), 
@@ -233,7 +235,9 @@ class Player(Character):
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
 
-            #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
+            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'frozen_player' and self == event.target:
+                self.__is_frozen = True
+                        
 
             if event.type == RESET_STATE and self == event.target:
                 if event.collectable_type == 'size_up_player':
@@ -243,4 +247,7 @@ class Player(Character):
                     height = event.target.get_rect().height
                     self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                     event.target.get_rect().height *=2
+                
+                elif event.collectable_type == 'frozen_player':
+                    self.__is_frozen = False
                     

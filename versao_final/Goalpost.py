@@ -17,11 +17,15 @@ class Goalpost(GameObject):
     
     def handle_events(self,events: event):
         for event in events:
-            if event.type == BUFF_APPLIED  and event.collectable_type == 'size_down_goalpost' and self == event.target:
-                player_min = self.get_rect().height * 0.5
-                new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
-                self.set_rect(new_rect_debuff)
-                
+            if event.type == BUFF_APPLIED  and event.collectable_type == 'size_down_goalpost' :
+                if event.target == "right_goalpost" and self.get_side() == 'right':
+                    player_min = self.get_rect().height * 0.5
+                    new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
+                    self.set_rect(new_rect_debuff)
+                elif event.target == "left_goalpost" and self.get_side() == 'left':
+                    player_min = self.get_rect().height * 0.5
+                    new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
+                    self.set_rect(new_rect_debuff)
         
             elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'size_up_goalpost' and self == event.target:
                 height = event.target.get_rect().height
