@@ -10,9 +10,9 @@ from Debuff import Debuff
 from Goalpost import Goalpost
 from Scenario import Scenario
 from Ground import Ground
+from Foot import Foot
 import random
 from utils import *
-from Foot import Foot
 
 class Match:
     def __init__(self, surface):
@@ -22,14 +22,16 @@ class Match:
         pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
         pygame.mixer.music.play(-1)
         self.__game_objects: list[GameObject] = [
-            Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='messi.png', is_player_one=True),
-            Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='ronaldinho.png', is_player_one=False),
+            Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='messi.png', is_player_one=True),
+            Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
             Buff(20,20,370,self.__scenario.get_ground_height()+200, 10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
         ]
+        self.__game_objects.append(Foot(30, 10, self.__game_objects[0]))
+        self.__game_objects.append(Foot(30, 10, self.__game_objects[1]))
         self.__time: int = 180
         self.__gravity = 0.6
         pygame.time.set_timer(pygame.USEREVENT, 1000)

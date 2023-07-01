@@ -241,3 +241,5 @@ class Player(Character):
                     self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                     event.target.get_rect().height *=2
                     
+    def get_player_one(self):
+        return self.__is_player_one
