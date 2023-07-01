@@ -4,6 +4,7 @@ from Credits import Credits
 from HowToPlay import HowToPlay
 from New_Game import New_Game
 from Text import Text
+from Game import Game
 import pygame
 from Restart import Restart
 
@@ -106,6 +107,8 @@ class Global:
                 elif event == "-PREV-":
                     if new_game._New_Game__vector == 0:
                         new_game._New_Game__vector = len(new_game._New_Game__players) - 1
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE-"].update(filename=new_game._New_Game__select)
                     else:
                         new_game._New_Game__vector -= 1
                         new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
@@ -114,6 +117,8 @@ class Global:
                 elif event == "-NEXT":
                     if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
                         new_game._New_Game__vector = 0
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE-"].update(filename=new_game._New_Game__select)
                     else:
                         new_game._New_Game__vector += 1
                         new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
@@ -122,6 +127,8 @@ class Global:
                 elif event == "-HOME-":
                     if new_game._New_Game__vector == 0:
                         new_game._New_Game__vector = len(new_game._New_Game__players) - 1
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
                     else:
                         new_game._New_Game__vector -= 1
                         new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
@@ -130,15 +137,32 @@ class Global:
                 elif event == "-END":
                     if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
                         new_game._New_Game__vector = 0
+                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
                     else:
                         new_game._New_Game__vector += 1
                         new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
                         new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-PREVIOUS":
-                    print("")
+                    if new_game._New_Game__vector_match == 0:
+                        new_game._New_Game__vector_match = len(new_game._New_Game__match) - 1
+                        new_game._New_Game__select_match = new_game._New_Game__match[new_game._New_Game__vector_match]
+                        new_game._New_Game__window["-GAME-"].update(filename=new_game._New_Game__select_match)
+                    else:
+                        new_game._New_Game__vector_match -= 1
+                        new_game._New_Game__select_match = new_game._New_Game__match[new_game._New_Game__vector_match]
+                        new_game._New_Game__window["-GAME-"].update(filename=new_game._New_Game__select_match)
+
                 elif event == "-FOLLOWING":
-                    print("")
+                    if new_game._New_Game__vector_match == len(new_game._New_Game__match) - 1:
+                        new_game._New_Game__vector_match = 0
+                        new_game._New_Game__select_match = new_game._New_Game__match[new_game._New_Game__vector_match]
+                        new_game._New_Game__window["-GAME-"].update(filename=new_game._New_Game__select_match)
+                    else:
+                        new_game._New_Game__vector_match += 1
+                        new_game._New_Game__select_match = new_game._New_Game__match[new_game._New_Game__vector_match]
+                        new_game._New_Game__window["-GAME-"].update(filename=new_game._New_Game__select_match)
 
                 elif event == "NEXT":
                     cfg = {"":""} #to do - implement game cfg file that can be editted in menu

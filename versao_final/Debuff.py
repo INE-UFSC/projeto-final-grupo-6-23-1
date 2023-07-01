@@ -13,7 +13,8 @@ class Debuff(Collectables):
         self.__sprite = None
         self.__debuffs = {
                         'size_down_player': get_file_path('sprites', 'collectables', 'size_down_player.png'),
-                        'size_up_goalpost': get_file_path('sprites', 'collectables', 'size_up_goalpost.png')
+                        'size_up_goalpost': get_file_path('sprites', 'collectables', 'size_up_goalpost.png'),
+                        'frozen_player': get_file_path('sprites', 'collectables', 'frozen_player.png')
                         
                         }
         #                'frozen_player': get_file_path('sprites', 'collectables', 'fronzen.png')
@@ -55,10 +56,10 @@ class Debuff(Collectables):
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_player"), 10000,1)
             pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player, collectable_type = "size_down_player"))
-        ''''elif self.get_type() == 'fronzen':
+        elif self.get_type() == 'fronzen_player':
             player = obj.get_last_touched()
-            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="fronzen"), 10000,1)
-            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player))'''
+            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="frozen_player"), 10000,1)
+            pygame.event.post(pygame.event.Event(DEBUFF_APPLIED, target = player, collectable_type = "frozen_player"))
     
     def handle_events(self,events):
         pass

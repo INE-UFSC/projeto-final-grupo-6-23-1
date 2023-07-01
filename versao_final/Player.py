@@ -15,32 +15,33 @@ class Player(Character):
         goals = 0
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass, goals)
         self.__controller = controller
-        self.__default_speed = 6
-        self.__default_jump_speed = 15
+        self.__default_speed = 5
+        self.__default_jump_speed = 8
         self.__in_floor = False
         self.__is_player_one = is_player_one
+        self.__is_frozen = False
 
         # Load image
         image_path = get_file_path('sprites', 'players', sprite)
         self.__sprite = pygame.image.load(image_path)
 
         # Inverts image horizontally if not player one (player in the left)
-        if is_player_one == False:
+        if self.__is_player_one == False:
             self.__sprite = pygame.transform.flip(self.__sprite, True, False)
 
         # maybe create an object?
         self.__controllers = [
             {
-                "UP": pygame.K_UP,
-                "DOWN":  pygame.K_DOWN,
-                "LEFT": pygame.K_LEFT,
-                "RIGHT": pygame.K_RIGHT
-            },
-            {
                 "UP": pygame.K_w,
                 "DOWN":  pygame.K_s,
                 "LEFT": pygame.K_a,
                 "RIGHT": pygame.K_d
+            },
+            {
+                "UP": pygame.K_UP,
+                "DOWN":  pygame.K_DOWN,
+                "LEFT": pygame.K_LEFT,
+                "RIGHT": pygame.K_RIGHT
             },
         ]
     
@@ -95,7 +96,7 @@ class Player(Character):
             self.set_speed_y(0)
 
     def handle_ball_collision(self, obj: Ball, direction):
-        collision_strengh = 15
+        collision_strengh = 10
         player_rect = self.get_rect()
         player_old_rect = self.get_old_rect()
 
@@ -106,22 +107,25 @@ class Player(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
         if direction == 'vertical':
             #collision on top
             if player_rect.top <= ball_rect.bottom and player_old_rect.top >= ball_old_rect.bottom:
-                player_rect.top = ball_rect.bottom
+                ball_rect.bottom = player_rect.top
+                obj.kick(self.get_speed_y(), collision_strengh, self, 'y')
+                if self.get_speed_x() != 0:
+                    obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on bottom
             if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
                 player_rect.bottom = ball_rect.top
-                self.__in_floor = True  
+                self.__in_floor = True
 
     def handle_player_collision(self, other_player, direction):
         player = self.get_rect()
@@ -170,20 +174,21 @@ class Player(Character):
         controller = self.__controllers[self.__controller]
         self.update_old_rect()
 
-        for event in events:
-            if event.type == KEYDOWN:
-                if event.key == controller["UP"] and self.__in_floor == True:
-                    self.set_speed_y(-self.__default_jump_speed)
-                    self.__in_floor = False
-                if event.key == controller["LEFT"]:
-                    self.set_speed_x(-self.__default_speed)
-                if event.key == controller["RIGHT"]:
-                    self.set_speed_x(self.__default_speed)
-            elif event.type == KEYUP:
-                if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
-                    self.set_speed_x(0)
-                elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
-                    self.set_speed_x(0)
+        if not self.__is_frozen:
+            for event in events:
+                if event.type == KEYDOWN:
+                    if event.key == controller["UP"] and self.__in_floor == True:
+                        self.set_speed_y(-self.__default_jump_speed)
+                        self.__in_floor = False
+                    if event.key == controller["LEFT"]:
+                        self.set_speed_x(-self.__default_speed)
+                    if event.key == controller["RIGHT"]:
+                        self.set_speed_x(self.__default_speed)
+                elif event.type == KEYUP:
+                    if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
+                        self.set_speed_x(0)
+                    elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
+                        self.set_speed_x(0)
 
         self.check_collisions(
             screen.get_width(), 
@@ -230,7 +235,9 @@ class Player(Character):
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
 
-            #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
+            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'frozen_player' and self == event.target:
+                self.__is_frozen = True
+                        
 
             if event.type == RESET_STATE and self == event.target:
                 if event.collectable_type == 'size_up_player':
@@ -240,6 +247,9 @@ class Player(Character):
                     height = event.target.get_rect().height
                     self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                     event.target.get_rect().height *=2
+                
+                elif event.collectable_type == 'frozen_player':
+                    self.__is_frozen = False
                     
     def get_player_one(self):
         return self.__is_player_one

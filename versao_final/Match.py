@@ -15,16 +15,15 @@ import random
 from utils import *
 
 class Match:
-    def __init__(self, surface):
-        self.__scenario: Scenario = Scenario(surface)
+    def __init__(self, surface, map):
+        self.__scenario: Scenario = Scenario(surface, map)
         pygame.init()
-        pygame.mixer.init()
-        pygame.mixer.music.load(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
-        pygame.mixer.music.play(-1)
+        self.__scenario.start_music()
         self.__game_objects: list[GameObject] = [
             Player(40, 50, 270, self.__scenario.get_ground_height(), 0, 0, 50, 1, sprite='messi.png', is_player_one=True),
             Player(40, 50, 350, self.__scenario.get_ground_height(), 0, 0, 50, 0, sprite='ronaldinho.png', is_player_one=False),
             Ball(20, 20, 310, self.__scenario.get_ground_height(), 0, 0, 1.5),
+            #Debuff(20,20,370,self.__scenario.get_ground_height()+200, 10),
             Buff(20,20,370,self.__scenario.get_ground_height()+200, 10),
             Goalpost(*self.__get_goal_params(surface, 'left')),
             Goalpost(*self.__get_goal_params(surface, 'right')),
@@ -33,7 +32,7 @@ class Match:
         self.__game_objects.append(Foot(30, 10, self.__game_objects[0]))
         self.__game_objects.append(Foot(30, 10, self.__game_objects[1]))
         self.__time: int = 180
-        self.__gravity = 0.6
+        self.__gravity = 0.3
         pygame.time.set_timer(pygame.USEREVENT, 1000)
         pygame.time.set_timer(CREATE_COLLECTABLE, 5000)
         self.__allow_collectable_creation = True
@@ -148,7 +147,7 @@ class Match:
     def reset(self):
         self.__game_objects[0].set_pos(270, 0)
         self.__game_objects[1].set_pos(350, 0)
-        self.__game_objects[2].set_pos(310, 0)
+        self.__game_objects[2].set_pos(310, 20)
         self.__game_objects[2].set_goal(False)
         self.__game_objects[2].set_in_ground(False)
         self.__game_objects[2].set_speed_x(0)
