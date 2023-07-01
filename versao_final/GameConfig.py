@@ -1,4 +1,5 @@
 class GameConfig:
+
     def __init__(self):
         #iniciate with default values
         self.__map = 'default'
