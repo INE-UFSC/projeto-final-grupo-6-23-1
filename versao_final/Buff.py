@@ -59,10 +59,14 @@ class Buff(Collectables):
             player = obj.get_last_touched()
             pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_up_player"), 10000,1)
             pygame.event.post(pygame.event.Event(BUFF_APPLIED, target= player, collectable_type = "size_up_player"))
-        elif self.get_type() == 'size_down_goalpost':
+        '''elif self.get_type() == 'size_down_goalpost':
             player = obj.get_last_touched()
-            pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = player, collectable_type="size_down_goalpost"), 10000,1)
-            pygame.event.post(pygame.event.Event(BUFF_APPLIED, target= player, collectable_type = "size_down_goalpost"))
+            if Goalpost.get_side() == 'right':
+                self.target = 'right_goalpost'
+            else:
+                self.target = 'left_goalpost'
+                pygame.time.set_timer(pygame.event.Event(RESET_STATE, target = self.target, collectable_type="size_down_goalpost"), 10000,1)
+                pygame.event.post(pygame.event.Event(BUFF_APPLIED, target= self.target, collectable_type = "size_down_goalpost"))'''
 
     
         
