@@ -17,9 +17,11 @@ class Foot(Character):
         super().__init__(width, height, player.get_pos_x(), player.get_pos_y(), player.get_speed_x(), player.get_speed_y(), player.get_mass(), goals)
         self.__player = player
         self.__default_speed = 4
-        self.__default_jump_speed = 2
+        self.__default_jump_speed = 4
         self.__is_player_one = player.get_player_one()
         self.__is_kicking = False
+        self.__angle = 0
+        self.__controller = player.get_controller()
 
         # Load image
         image_path = get_file_path('sprites', 'players', "foot.png")
@@ -30,7 +32,10 @@ class Foot(Character):
             self.__sprite = pygame.transform.flip(self.__sprite, True, False)
 
         # maybe create an object?
-        self.__controller = {"SPACE": pygame.K_SPACE}
+        self.__controllers = [
+            {"SPACE": pygame.K_SPACE},
+            {"SPACE": pygame.K_c}
+        ]
     
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
         #update horizontal position and check for collisions
@@ -83,7 +88,7 @@ class Foot(Character):
             self.set_speed_y(0)
 
     def handle_ball_collision(self, obj: Ball, direction):
-        collision_strengh = 15
+        collision_strengh = 10
         player_rect = self.get_rect()
         player_old_rect = self.get_old_rect()
 
@@ -94,40 +99,24 @@ class Foot(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
         if direction == 'vertical':
             #collision on top
             if player_rect.top <= ball_rect.bottom and player_old_rect.top >= ball_old_rect.bottom:
-                player_rect.top = ball_rect.bottom
+                ball_rect.bottom = player_rect.top
+                obj.kick(self.get_speed_y(), collision_strengh, self, 'y')
+                if self.get_speed_x() != 0:
+                    obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on bottom
             if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
                 player_rect.bottom = ball_rect.top
-
-    """def handle_player_collision(self, other_player, direction):
-        player = self.get_rect()
-        player_old_rect = self.get_old_rect()
-        player2 = other_player.get_rect()
-        player2_old_rect = other_player.get_old_rect()
-
-        if direction == 'horizontal':
-            if player.right >= player2.left and player_old_rect.right <= player2_old_rect.left:
-                player.right = player2.left
-            if player.left <= player2.right and player_old_rect.left >= player2_old_rect.right:
-                player.left = player2.right
-        elif direction == 'vertical':
-            if player.top <= player2.bottom and player_old_rect.top >= player2_old_rect.bottom:
-                player.top = player2.bottom
-                self.set_speed_y(0)
-            if player.bottom >= player2.top and player_old_rect.bottom <= player2_old_rect.top:
-                player.bottom = player2.top
-                self.set_speed_y(0)"""
 
     def handle_goalpost_collision(self, goalpost: Goalpost):
         player = self.get_rect()
@@ -142,24 +131,17 @@ class Foot(Character):
             self.set_speed_y(0)
 
     def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], scenario: Scenario, gravity: float, **args):
-        controller = self.__controller
+        controller = self.__controllers[self.__controller]
         self.update_old_rect()
-        angle = 1
 
         for event in events:
             if event.type == KEYDOWN:
                 if event.key == controller["SPACE"]:
                     self.__is_kicking = True
-                    if self.__is_player_one:
-                        self.set_speed_x(self.__default_speed*math.cos(angle))
-                    else:
-                        self.set_speed_x(-self.__default_speed*math.cos(angle))
-                    self.set_speed_y(-self.__default_jump_speed*math.sin(angle))
-
-                    angle += 0.01
             elif event.type == KEYUP:
                 if event.key == controller["SPACE"]:
                     self.__is_kicking = False
+                    self.__angle = 0
 
         self.check_collisions(
             screen.get_width(), 
@@ -169,19 +151,32 @@ class Foot(Character):
             )
 
     def update_pos(self, direction):
-        if not self.__is_kicking:
+        x = self.get_pos_x()
+        y = self.get_pos_y()
+        if self.__is_kicking:
+            if abs(x - self.__player.get_pos_x()) <= 75 and abs(y - self.__player.get_pos_y()) <= 75 and self.__angle <= 1.25:
+                if self.__is_player_one:
+                    self.set_speed_x(self.__default_speed*math.cos(self.__angle))
+                else:
+                    self.set_speed_x(-self.__default_speed*math.cos(self.__angle))
+                self.set_speed_y(-self.__default_jump_speed*math.sin(self.__angle))
+
+                self.__angle += 0.075
+
+                speed_x = self.get_speed_x()
+                speed_y = self.get_speed_y()
+
+                self.set_pos(x+speed_x, y+speed_y)
+            else:
+                if self.__is_player_one:
+                    self.set_pos(self.__player.get_pos_x()+51, self.__player.get_pos_y())
+                else:
+                    self.set_pos(self.__player.get_pos_x()-51,self.__player.get_pos_y())
+        else:
             x = self.__player.get_pos_x()
             y = self.__player.get_pos_y()
 
             self.set_pos(x, y + self.__player.get_height())
-        else:
-            x = self.get_pos_x()
-            y = self.get_pos_y()
-
-            speed_x = self.get_speed_x()
-            speed_y = self.get_speed_y()
-
-            self.set_pos(x+speed_x, y+speed_y)
 
     def handle_gravity(self, height, gravity):
         player = self.get_rect()
@@ -220,4 +215,3 @@ class Foot(Character):
                     height = event.target.get_rect().height
                     self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                     event.target.get_rect().height *=2
-                    

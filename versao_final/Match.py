@@ -29,8 +29,8 @@ class Match:
             Goalpost(*self.__get_goal_params(surface, 'right')),
             *self.__scenario.get_structures()
         ]
-        self.__game_objects.append(Foot(30, 10, self.__game_objects[0]))
-        self.__game_objects.append(Foot(30, 10, self.__game_objects[1]))
+        self.__game_objects.append(Foot(30, 20, self.__game_objects[0]))
+        self.__game_objects.append(Foot(30, 20, self.__game_objects[1]))
         self.__time: int = 180
         self.__gravity = 0.3
         pygame.time.set_timer(pygame.USEREVENT, 1000)

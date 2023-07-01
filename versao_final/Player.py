@@ -253,3 +253,6 @@ class Player(Character):
                     
     def get_player_one(self):
         return self.__is_player_one
+    
+    def get_controller(self):
+        return self.__controller
