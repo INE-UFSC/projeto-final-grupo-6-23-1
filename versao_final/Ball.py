@@ -12,10 +12,10 @@ from utils import get_file_path
 class Ball(MovingObjects):
     def __init__(self, width: int, height: int, pos_x: int, pos_y: int, speed_x: float, speed_y: float, mass: float):
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass)
-        self.__retention = 0.7 # variable that retains ball momentum when bouncing
-        self.__friction = 0.95 # ball friction against soil
+        self.__retention = 0.9 # variable that retains ball momentum when bouncing
+        self.__friction = 0.98 # ball friction against soil
         self.__last_touched_player = None
-        self.__stop_bounce = 3
+        self.__stop_bounce = 3.5
         self.__in_ground = False
         self.__goal = False
 
@@ -95,6 +95,7 @@ class Ball(MovingObjects):
                 self.set_speed_y(speed_y * -1)
             elif ball.top <= 0 and ball_old_rect.top >= 0:
                 ball.top = 0
+                self.set_speed_y(speed_y * -1)
 
     def handle_friction(self):
         stop_rotating = 0.3
@@ -199,14 +200,20 @@ class Ball(MovingObjects):
         if abs(speed_y) >= self.__speed_limit:
             self.set_speed_y((speed_y/abs(speed_y)) * self.__speed_limit)
     
-    def kick(self, speed, collision_strengh, player):
+    def kick(self, speed, collision_strengh, player, axis):
 
         self.__last_touched_player = player
         #values of collision strengh subject to change
-        if speed > 0:
-            self.set_speed_x(collision_strengh)
-        elif speed < 0:
-            self.set_speed_x(-collision_strengh)
+        if axis == 'x':
+            if speed > 0:
+                self.set_speed_x(collision_strengh)
+            elif speed < 0:
+                self.set_speed_x(-collision_strengh)
+        elif axis == 'y':
+            if speed < 0:
+                self.set_speed_y(-collision_strengh)
+            elif speed > 0:
+                self.set_speed_y(collision_strengh)
 
     def move(self, screen: pygame.Surface, game_objects: list[GameObject], gravity: float, **args):
         width = screen.get_width()

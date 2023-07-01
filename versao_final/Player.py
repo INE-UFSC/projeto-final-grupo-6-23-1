@@ -15,8 +15,8 @@ class Player(Character):
         goals = 0
         super().__init__(width, height, pos_x, pos_y, speed_x, speed_y, mass, goals)
         self.__controller = controller
-        self.__default_speed = 6
-        self.__default_jump_speed = 15
+        self.__default_speed = 5
+        self.__default_jump_speed = 8
         self.__in_floor = False
         self.__is_player_one = is_player_one
 
@@ -25,7 +25,7 @@ class Player(Character):
         self.__sprite = pygame.image.load(image_path)
 
         # Inverts image horizontally if not player one (player in the left)
-        if is_player_one == False:
+        if self.__is_player_one == False:
             self.__sprite = pygame.transform.flip(self.__sprite, True, False)
 
         # maybe create an object?
@@ -95,7 +95,7 @@ class Player(Character):
             self.set_speed_y(0)
 
     def handle_ball_collision(self, obj: Ball, direction):
-        collision_strengh = 15
+        collision_strengh = 10
         player_rect = self.get_rect()
         player_old_rect = self.get_old_rect()
 
@@ -106,22 +106,25 @@ class Player(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
-                obj.kick(self.get_speed_x(), collision_strengh, self)
+                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
         if direction == 'vertical':
             #collision on top
             if player_rect.top <= ball_rect.bottom and player_old_rect.top >= ball_old_rect.bottom:
-                player_rect.top = ball_rect.bottom
+                ball_rect.bottom = player_rect.top
+                obj.kick(self.get_speed_y(), collision_strengh, self, 'y')
+                if self.get_speed_x() != 0:
+                    obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
 
             #collision on bottom
             if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
                 player_rect.bottom = ball_rect.top
-                self.__in_floor = True  
+                self.__in_floor = True
 
     def handle_player_collision(self, other_player, direction):
         player = self.get_rect()

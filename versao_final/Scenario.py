@@ -8,11 +8,11 @@ class Scenario:
     def __init__(self, surface, type_ = 'default'):
         self.__ground_image = None
         self.__background_sprite = None
-        
-        if type_ == 'default':
+        self.__type = type_
+        if self.__type == 'default':
             self.__ground_image = pygame.image.load(get_file_path('sprites','stages','test','ground.png'))
             self.__background_sprite = pygame.image.load(get_file_path('sprites','stages','stadium.png'))
-        elif type_ == 'desert':
+        elif self.__type == 'desert':
             self.__ground_image = pygame.image.load(get_file_path('sprites','stages','desert_ground.png'))
             self.__background_sprite = pygame.image.load(get_file_path('sprites','stages','desert.jpg'))
         self.__ground = Ground(640, 72, 0, 288, self.__ground_image)
@@ -23,6 +23,15 @@ class Scenario:
     
     def get_structures(self):
         return [self.__ground]
+    
+    def start_music(self):
+        music = get_file_path('sprites', 'sound', 'crowd_sound.wav')
+        if self.__type == 'desert':
+            get_file_path('sprites', 'sound', 'wind_sound.wav')
+        
+        pygame.mixer.init()
+        pygame.mixer.music.load(music)
+        pygame.mixer.music.play(-1)
     
     def draw_background(self, surface):
         rect = self.__background
