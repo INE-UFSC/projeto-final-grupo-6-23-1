@@ -2,23 +2,27 @@ import pygame
 from pygame.locals import *
 import sys
 from Match import Match
+from GameConfig import GameConfig
 
 
 class Game:
-    def __init__(self, config): 
+    def __init__(self, config: GameConfig): 
         self.__config = config
-        self.__width = 640
-        self.__height = 360
+        #Example on how to change the map
+        #self.__config.set_map('desert')
+        self.__width = self.__config.get_screen_width()
+        self.__height = self.__config.get_screen_height()
         self.__screen = pygame.display.set_mode((self.__width, self.__height))  #essa informação deve vir de config
-        self.__match = Match(self.__screen)
+        self.__match = None
         pygame.display.set_caption('Goal Masters')
         self.__background = pygame.Surface(self.__screen.get_size())
         self.__running = False
-        self.__fps: int = 60
+        self.__fps: int = self.__config.get_fps()
         self.__timer = pygame.time.Clock()
 
     def start_game(self):
         pygame.init()
+        self.__match = Match(self.__screen, self.__config.get_map())
         self.__running = True
         self.loop()
 

@@ -15,8 +15,8 @@ from utils import *
 from Foot import Foot
 
 class Match:
-    def __init__(self, surface):
-        self.__scenario: Scenario = Scenario(surface)
+    def __init__(self, surface, map):
+        self.__scenario: Scenario = Scenario(surface, map)
         pygame.init()
         self.__scenario.start_music()
         self.__game_objects: list[GameObject] = [

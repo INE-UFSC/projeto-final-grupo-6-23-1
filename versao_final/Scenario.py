@@ -27,7 +27,7 @@ class Scenario:
     def start_music(self):
         music = get_file_path('sprites', 'sound', 'crowd_sound.wav')
         if self.__type == 'desert':
-            get_file_path('sprites', 'sound', 'wind_sound.wav')
+            music = get_file_path('sprites', 'sound', 'wind_sound.wav')
         
         pygame.mixer.init()
         pygame.mixer.music.load(music)
