@@ -31,16 +31,16 @@ class Player(Character):
         # maybe create an object?
         self.__controllers = [
             {
-                "UP": pygame.K_UP,
-                "DOWN":  pygame.K_DOWN,
-                "LEFT": pygame.K_LEFT,
-                "RIGHT": pygame.K_RIGHT
-            },
-            {
                 "UP": pygame.K_w,
                 "DOWN":  pygame.K_s,
                 "LEFT": pygame.K_a,
                 "RIGHT": pygame.K_d
+            },
+            {
+                "UP": pygame.K_UP,
+                "DOWN":  pygame.K_DOWN,
+                "LEFT": pygame.K_LEFT,
+                "RIGHT": pygame.K_RIGHT
             },
         ]
     
