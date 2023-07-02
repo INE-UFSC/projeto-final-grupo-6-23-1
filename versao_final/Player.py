@@ -22,12 +22,16 @@ class Player(Character):
         self.__is_frozen = False
 
         # Load image
+        frozen_image_path = get_file_path('sprites', 'players','frozen', sprite)
+        self.__frozen_sprite = pygame.image.load(frozen_image_path)
         image_path = get_file_path('sprites', 'players', sprite)
         self.__sprite = pygame.image.load(image_path)
+        self.__current_sprite = self.__sprite
 
         # Inverts image horizontally if not player one (player in the left)
         if self.__is_player_one == False:
             self.__sprite = pygame.transform.flip(self.__sprite, True, False)
+            self.__frozen_sprite = pygame.transform.flip(self.__frozen_sprite, True, False)
 
         # maybe create an object?
         self.__controllers = [
@@ -173,22 +177,23 @@ class Player(Character):
     def move(self, events: event, screen: pygame.Surface, game_objects: list[GameObject], scenario: Scenario, gravity: float, **args):
         controller = self.__controllers[self.__controller]
         self.update_old_rect()
-
-        if not self.__is_frozen:
-            for event in events:
-                if event.type == KEYDOWN:
-                    if event.key == controller["UP"] and self.__in_floor == True:
-                        self.set_speed_y(-self.__default_jump_speed)
-                        self.__in_floor = False
-                    if event.key == controller["LEFT"]:
-                        self.set_speed_x(-self.__default_speed)
-                    if event.key == controller["RIGHT"]:
-                        self.set_speed_x(self.__default_speed)
-                elif event.type == KEYUP:
-                    if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
-                        self.set_speed_x(0)
-                    elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
-                        self.set_speed_x(0)
+        if self.__is_frozen:
+            return 
+        
+        for event in events:
+            if event.type == KEYDOWN:
+                if event.key == controller["UP"] and self.__in_floor == True:
+                    self.set_speed_y(-self.__default_jump_speed)
+                    self.__in_floor = False
+                if event.key == controller["LEFT"]:
+                    self.set_speed_x(-self.__default_speed)
+                if event.key == controller["RIGHT"]:
+                    self.set_speed_x(self.__default_speed)
+            elif event.type == KEYUP:
+                if event.key == controller["RIGHT"] and self.get_speed_x() > 0:
+                    self.set_speed_x(0)
+                elif event.key == controller["LEFT"] and self.get_speed_x() < 0:
+                    self.set_speed_x(0)
 
         self.check_collisions(
             screen.get_width(), 
@@ -219,11 +224,18 @@ class Player(Character):
 
     def draw(self, pg: pygame, surface: pygame.Surface):
         rect = self.get_rect()
-        resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
-        surface.blit(resized_sprite, rect)
+        if self.__is_frozen:
+            resized_sprite = pygame.transform.scale(self.__frozen_sprite, (rect.width, rect.height))
+            surface.blit(resized_sprite, rect)
+        else:
+            resized_sprite = pygame.transform.scale(self.__sprite, (rect.width, rect.height))
+            surface.blit(resized_sprite, rect)
+
 
     def handle_events(self, events: event):
+        
         for event in events:
+            
             if event.type == BUFF_APPLIED  and event.collectable_type == 'size_up_player' and self == event.target:
                 height = event.target.get_rect().height
                 self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
@@ -237,6 +249,8 @@ class Player(Character):
 
             elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'frozen_player' and self == event.target:
                 self.__is_frozen = True
+                self.__current_sprite = self.__frozen_sprite
+                
                         
 
             if event.type == RESET_STATE and self == event.target:
@@ -250,6 +264,8 @@ class Player(Character):
                 
                 elif event.collectable_type == 'frozen_player':
                     self.__is_frozen = False
+                    self.__current_sprite == self.__sprite
+        
                     
     def get_player_one(self):
         return self.__is_player_one
