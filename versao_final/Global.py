@@ -176,12 +176,7 @@ class Global:
 
                     elif new_game._New_Game__vector_match == 1:
                         game._Game__config.set_map('desert')
-                    
-                    if game._Game__config.get_map == 'desert':
-                        game._Game__config.set_sound(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
 
-                    elif game._Game__config.get_map == 'default':
-                        game._Game__config.set_sound(get_file_path('sprites', 'sound', 'wind_sound.wav'))
                     game.start_game()
                           
                 elif event == sg.WIN_CLOSED:
