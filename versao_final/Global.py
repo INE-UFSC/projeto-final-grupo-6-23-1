@@ -7,7 +7,7 @@ from Text import Text
 from Game import Game
 import pygame
 from Restart import Restart
-
+from GameConfig import GameConfig
 class Global:
     def __init__(self):
         self.__screens = [Menu, Credits, HowToPlay, New_Game,Text,"END", Restart]
@@ -165,10 +165,14 @@ class Global:
                         new_game._New_Game__window["-GAME-"].update(filename=new_game._New_Game__select_match)
 
                 elif event == "NEXT":
-                    cfg = {"":""} #to do - implement game cfg file that can be editted in menu
                     new_game._New_Game__window.close()
-                    new_game = Game(cfg)
+                    game_config = GameConfig()
+                    if (new_game._New_Game__vector_match // 2) == 0:
+                        game_config.set_map('desert')
+                    else:
+                        game_config.set_map('default')
                     
+                    new_game = Game(GameConfig())
                     new_game.start_game()
                                 
                 elif event == sg.WIN_CLOSED:

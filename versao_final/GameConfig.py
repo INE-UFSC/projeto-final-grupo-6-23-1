@@ -7,7 +7,7 @@ class GameConfig:
         self.__screen_height = 360
         self.__fps = 60
 
-    def set_map(self, map: str):
+    def set_map(self, map: str):        
         self.__map = map
 
     def set_screen_width(self, width: str):

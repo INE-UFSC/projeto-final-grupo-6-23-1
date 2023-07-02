@@ -5,8 +5,8 @@ class New_Game:
 
     def __init__(self):
         self.__players = [
-            get_file_path('sprites', 'players', 'messi.png'),
-            get_file_path('sprites', 'players', 'ronaldinho.png'),
+            get_file_path('sprites', 'players', 'messi+foot.png'),
+            get_file_path('sprites', 'players', 'ronaldinho + foot.png'),
         ]
         
         self.__match = [
