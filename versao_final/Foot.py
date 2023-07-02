@@ -33,8 +33,8 @@ class Foot(Character):
 
         # maybe create an object?
         self.__controllers = [
-            {"SPACE": pygame.K_SPACE},
-            {"SPACE": pygame.K_c}
+            {"SPACE": pygame.K_c},
+            {"SPACE": pygame.K_SPACE}
         ]
     
     def check_collisions(self, width: int, height: int, game_objects: list[GameObject], gravity: float):
