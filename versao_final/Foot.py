@@ -99,20 +99,20 @@ class Foot(Character):
             #collision on the right
             if player_rect.right >= ball_rect.left and player_old_rect.right <= ball_old_rect.left:
                 player_rect.right = ball_rect.left
-                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
+                obj.kick(self.get_speed_x(), collision_strengh, self.__player, 'x')
 
             #collision on the left
             if player_rect.left <= ball_rect.right and player_old_rect.left >= ball_old_rect.right:
                 player_rect.left = ball_rect.right
-                obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
+                obj.kick(self.get_speed_x(), collision_strengh, self.__player, 'x')
 
         if direction == 'vertical':
             #collision on top
             if player_rect.top <= ball_rect.bottom and player_old_rect.top >= ball_old_rect.bottom:
                 ball_rect.bottom = player_rect.top
-                obj.kick(self.get_speed_y(), collision_strengh, self, 'y')
+                obj.kick(self.get_speed_y(), collision_strengh, self.__player, 'y')
                 if self.get_speed_x() != 0:
-                    obj.kick(self.get_speed_x(), collision_strengh, self, 'x')
+                    obj.kick(self.get_speed_x(), collision_strengh, self.__player, 'x')
 
             #collision on bottom
             if player_rect.bottom >= ball_rect.top and player_old_rect.bottom <= ball_old_rect.top:
@@ -194,24 +194,24 @@ class Foot(Character):
 
     def handle_events(self, events: event):
         for event in events:
-            if event.type == BUFF_APPLIED  and event.collectable_type == 'size_up_player' and self == event.target:
-                height = event.target.get_rect().height
+            if event.type == BUFF_APPLIED  and event.collectable_type == 'size_up_player' and self.__player == event.target:
+                height = self.get_rect().height
                 self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
                 new_rect_applied = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, (self.get_rect().height * 2))
                 self.set_rect(new_rect_applied)
         
-            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'size_down_player' and self == event.target:
+            elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'size_down_player' and self.__player == event.target:
                 player_min = self.get_rect().height * 0.5
                 new_rect_debuff = Rect(self.get_pos_x(),self.get_pos_y(),self.get_rect().width, self.get_rect().height - player_min )
                 self.set_rect(new_rect_debuff)
 
             #elif event.type == DEBUFF_APPLIED  and event.collectable_type == 'fronzen' and self == event.target:
 
-            if event.type == RESET_STATE and self == event.target:
+            if event.type == RESET_STATE and self.__player == event.target:
                 if event.collectable_type == 'size_up_player':
-                   event.target.get_rect().height *= 0.5 
+                   self.get_rect().height *= 0.5 
                 
                 elif event.collectable_type == 'size_down_player':
-                    height = event.target.get_rect().height
+                    height = self.get_rect().height
                     self.set_pos(self.get_pos_x(), self.get_pos_y() - height) 
-                    event.target.get_rect().height *=2
+                    self.get_rect().height *=2
