@@ -8,8 +8,12 @@ class GameConfig:
         self.__fps = 60
 
     def set_map(self, map: str):        
-        self.__map = map
+        if self.__map == 'default':
+            self.__map = 'desert'
 
+        elif self.__map == 'desert':
+            self.__map = 'default'
+            
     def set_screen_width(self, width: str):
         self.__screen_width = width
 

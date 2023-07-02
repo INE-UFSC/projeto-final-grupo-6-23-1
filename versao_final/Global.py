@@ -166,15 +166,10 @@ class Global:
 
                 elif event == "NEXT":
                     new_game._New_Game__window.close()
-                    game_config = GameConfig()
-                    if (new_game._New_Game__vector_match // 2) == 0:
-                        game_config.set_map('desert')
-                    else:
-                        game_config.set_map('default')
-                    
+                    game_config = GameConfig()                   
                     new_game = Game(GameConfig())
                     new_game.start_game()
-                                
+                          
                 elif event == sg.WIN_CLOSED:
                     self.__screen_actually = self.__screens[5]
         
@@ -185,9 +180,8 @@ class Global:
                 event, values = restart._Restart__window.read()
                 if event == "RESTART":
                     restart._Restart__window.close()
-                    cfg = {"":""} #to do - implement game cfg file that can be editted in menu
-                    new_game._New_Game__window.close()
-                    new_game = Game(cfg)
+                    new_game = Game(GameConfig())
+                    new_game.start_game()
                     
                     new_game.start_game()
 
