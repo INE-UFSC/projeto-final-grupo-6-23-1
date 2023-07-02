@@ -1,3 +1,5 @@
+from utils import get_file_path
+
 class GameConfig:
 
     def __init__(self):
@@ -6,14 +8,11 @@ class GameConfig:
         self.__screen_width = 640
         self.__screen_height = 360
         self.__fps = 60
+        self.__sound = get_file_path('sprites', 'sound', 'crowd_sound.wav')
 
-    def set_map(self, map: str):        
-        if self.__map == 'default':
-            self.__map = 'desert'
+    def set_map(self, map: str):
+        self.__map = map
 
-        elif self.__map == 'desert':
-            self.__map = 'default'
-            
     def set_screen_width(self, width: str):
         self.__screen_width = width
 
@@ -34,3 +33,9 @@ class GameConfig:
     
     def get_fps(self):
         return self.__fps
+    
+    def get_sound(self):
+        return self.__sound
+    
+    def set_sound(self, sound):
+        self.__sound = sound

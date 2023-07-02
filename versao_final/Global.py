@@ -8,6 +8,8 @@ from Game import Game
 import pygame
 from Restart import Restart
 from GameConfig import GameConfig
+from utils import get_file_path
+
 class Global:
     def __init__(self):
         self.__screens = [Menu, Credits, HowToPlay, New_Game,Text,"END", Restart]
@@ -125,24 +127,24 @@ class Global:
                         new_game._New_Game__window["-IMAGE-"].update(filename=new_game._New_Game__select)
 
                 elif event == "-HOME-":
-                    if new_game._New_Game__vector == 0:
-                        new_game._New_Game__vector = len(new_game._New_Game__players) - 1
-                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
-                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
+                    if new_game._New_Game__vector_2 == 0:
+                        new_game._New_Game__vector_2 = len(new_game._New_Game__players_2) - 1
+                        new_game._New_Game__select_2 = new_game._New_Game__players_2[new_game._New_Game__vector_2]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select_2)
                     else:
-                        new_game._New_Game__vector -= 1
-                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
-                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
+                        new_game._New_Game__vector_2 -= 1
+                        new_game._New_Game__select_2 = new_game._New_Game__players_2[new_game._New_Game__vector_2]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select_2)
 
                 elif event == "-END":
-                    if new_game._New_Game__vector == len(new_game._New_Game__players) - 1:
-                        new_game._New_Game__vector = 0
-                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
-                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
+                    if new_game._New_Game__vector_2 == len(new_game._New_Game__players_2) - 1:
+                        new_game._New_Game__vector_2 = 0
+                        new_game._New_Game__select_2 = new_game._New_Game__players_2[new_game._New_Game__vector_2]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select_2)
                     else:
-                        new_game._New_Game__vector += 1
-                        new_game._New_Game__select = new_game._New_Game__players[new_game._New_Game__vector]
-                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select)
+                        new_game._New_Game__vector_2 += 1
+                        new_game._New_Game__select_2 = new_game._New_Game__players_2[new_game._New_Game__vector_2]
+                        new_game._New_Game__window["-IMAGE_UNIFORM-"].update(filename=new_game._New_Game__select_2)
 
                 elif event == "-PREVIOUS":
                     if new_game._New_Game__vector_match == 0:
@@ -167,8 +169,20 @@ class Global:
                 elif event == "NEXT":
                     new_game._New_Game__window.close()
                     game_config = GameConfig()                   
-                    new_game = Game(GameConfig())
-                    new_game.start_game()
+                    game = Game(GameConfig())
+
+                    if new_game._New_Game__vector_match == 0:
+                        game._Game__config.set_map('default')
+
+                    elif new_game._New_Game__vector_match == 1:
+                        game._Game__config.set_map('desert')
+                    
+                    if game._Game__config.get_map == 'desert':
+                        game._Game__config.set_sound(get_file_path('sprites', 'sound', 'crowd_sound.wav'))
+
+                    elif game._Game__config.get_map == 'default':
+                        game._Game__config.set_sound(get_file_path('sprites', 'sound', 'wind_sound.wav'))
+                    game.start_game()
                           
                 elif event == sg.WIN_CLOSED:
                     self.__screen_actually = self.__screens[5]
@@ -190,6 +204,5 @@ class Global:
                     self.__screen_actually = self.__screens[0]
                     menu = Menu()
                                 
-
 start_game = Global()
 start_game.events()
