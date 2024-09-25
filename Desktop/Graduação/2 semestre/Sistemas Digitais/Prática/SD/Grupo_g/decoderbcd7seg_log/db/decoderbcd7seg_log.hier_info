@@ -1,0 +1,34 @@
+|decoderbcd7seg_log
+bcd[0] => a.IN1
+bcd[0] => a.IN1
+bcd[0] => b.IN0
+bcd[0] => d.IN1
+bcd[0] => d.IN1
+bcd[0] => e.IN1
+bcd[0] => a.IN1
+bcd[0] => b.IN1
+bcd[0] => c.IN1
+bcd[1] => b.IN1
+bcd[1] => b.IN0
+bcd[1] => c.IN0
+bcd[1] => a.IN0
+bcd[1] => a.IN1
+bcd[1] => a.IN1
+bcd[1] => d.IN1
+bcd[2] => a.IN1
+bcd[2] => b.IN1
+bcd[2] => b.IN1
+bcd[2] => a.IN0
+bcd[2] => c.IN1
+bcd[2] => d.IN0
+bcd[3] => a.IN1
+bcd[3] => d.IN1
+a << a.DB_MAX_OUTPUT_PORT_TYPE
+b << b.DB_MAX_OUTPUT_PORT_TYPE
+c << c.DB_MAX_OUTPUT_PORT_TYPE
+d << d.DB_MAX_OUTPUT_PORT_TYPE
+e << e.DB_MAX_OUTPUT_PORT_TYPE
+f << f.DB_MAX_OUTPUT_PORT_TYPE
+g << g.DB_MAX_OUTPUT_PORT_TYPE
+
+

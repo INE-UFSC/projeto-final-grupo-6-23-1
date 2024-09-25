@@ -1,0 +1,43 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY decodificadorBCD7Seg IS
+PORT (
+bcd : IN std_logic_vector(3 DOWNTO 0);
+abcdefg : OUT std_logic_vector(6 DOWNTO 0)
+);
+
+END decodificadorBCD7Seg;
+
+ARCHITECTURE arch OF decodificadorBCD7Seg IS
+
+BEGIN
+
+case bcd is
+	when "0000" =>							--0
+		abcdefg <= "1000000";
+	when "0001" =>							--1
+		abcdefg <= "1111001";
+	when "0010" =>							--2
+		abcdefg <= "0100100";
+	when "0011" =>							--3
+		abcdefg <= "0110000";
+	when "0100" =>							--4
+		abcdefg <= "0011001";
+	when "0101" =>							--5
+		abcdefg <= "0010010";
+	when "0110" =>							--6
+		abcdefg <= "0000010";
+	when "0111" =>							--7
+		abcdefg <= "1111000";	
+	when "1000" =>							--8
+		abcdefg <= "0000000";
+	when "1001" =>							--9
+		abcdefg <= "0010000";
+	when others =>							--others
+		abcdefg <= "1111111";
+
+	
+END arch;
+

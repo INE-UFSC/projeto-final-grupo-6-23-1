@@ -1,0 +1,156 @@
+#DEMUX1-4
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY demux1para4 IS
+	PORT (
+		f : IN std_logic;
+		sel : IN std_logic_vector (1 DOWNTO 0);
+		a, b, c, d : OUT std_logic
+	);
+END demux1para4;
+
+ARCHITECTURE arch OF demux1para4 IS
+
+BEGIN
+	if (f=1) then
+		with sel select
+			a <= 
+				1 when "00";
+				0 when "01";
+				0 when "10";
+				0 when "11";
+			b <= 
+
+				0 when "00";
+				1 when "01";
+				0 when "10";
+				0 when "11";
+			c <=
+
+				0 when "00";
+				0 when "01";
+				1 when "10";
+				0 when "11";
+			d <=
+
+				0 when "00";
+				0 when "01";
+				0 when "10";
+				1 when "11";
+	elsif (others => '0')
+
+END arch;
+
+#MUX4-1
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY mux4para1 IS
+	GENERIC (N : POSITIVE := 1);
+	PORT (
+		a, b, c, d : IN std_logic_vector (N-1 DOWNTO 0);
+		sel : IN std_logic_vector (1 DOWNTO 0);
+		y : OUT std_logic_vector (N - 1 DOWNTO 0)
+	);
+END mux4para1;
+
+ARCHITECTURE arch OF mux4para1 IS
+
+BEGIN
+	with sel select
+	y <=
+		a when "00",
+		b when "01",
+		c when "10",
+		d when others;
+
+
+END arch;
+
+#DECODIFICADORBDC7SEG
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY decodificadorBCD7Seg IS
+	PORT (
+		bcd : IN std_logic_vector(3 DOWNTO 0);
+		a, b, c, d, e, f, g : OUT std_logic
+	);
+END decodificadorBCD7Seg;
+
+ARCHITECTURE arch OF decodificadorBCD7Seg IS
+
+
+BEGIN
+END ARCHITECTURE; 
+
+#DECODIFICADORBCD7SEG
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY decodificadorBCD7Seg IS
+	PORT (
+		bcd : IN std_logic_vector(3 DOWNTO 0);
+		abcdefg : OUT std_logic_vector(6 DOWNTO 0)
+	);
+
+END decodificadorBCD7Seg;
+
+ARCHITECTURE arch OF decodificadorBCD7Seg IS
+
+BEGIN
+
+	with bcd select
+		abcdefg <=
+
+			"1000000" when "0000", -- 0
+            		"1111001" when "0001", -- 1
+            		"0100100" when "0010", -- 2
+            		"0110000" when "0011", -- 3
+            		"0011001" when "0100", -- 4
+            		"0010010" when "0101", -- 5
+            		"0000010" when "0110", -- 6
+            		"1111000" when "0111", -- 7
+            		"0000000" when "1000", -- 8
+            		"0010000" when "1001", -- 9
+            		"0001000" when "1010", -- A
+            		"0000011" when "1011", -- B
+            		"1000110" when "1100", -- C
+            		"0100001" when "1101", -- D
+            		"0000110" when "1110", -- E
+            		"0001110" when "1111", -- F
+            		"1111111" when others;
+        
+
+END arch;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

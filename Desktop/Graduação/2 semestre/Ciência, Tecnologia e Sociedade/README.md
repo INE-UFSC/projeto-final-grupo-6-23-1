@@ -1,0 +1,1 @@
+Alguns materiais desta pasta são da professora Lúcia Helena Martins Pacheco, já outros são as entregas realizadas.

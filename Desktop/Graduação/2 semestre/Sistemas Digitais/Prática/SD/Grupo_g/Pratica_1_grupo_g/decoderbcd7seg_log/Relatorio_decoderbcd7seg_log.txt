@@ -1,0 +1,21 @@
+--------------- dados do aluno ---------------
+nome: André Thiago Pfleger
+matricula: 22200345
+
+nome: Heryk dos Santos Barros
+matricula: 19250116
+
+--------------- dados do fpga ----------------
+familia: Cyclone III
+dispositivo: EP3C5E144C7
+
+-------- dados de utilizacao da placa --------
+total combinational functions: 7/5136
+dedicates logic registers: 0/5136
+total pins:11/95
+
+-------------- dados de atraso ---------------
+input port: bcd[0], bcd[1], bcd[2], bcd[3]
+output port: a, b, c, d, e, f, g
+atraso (ns): bcd[1], 10.258
+RR, RF, FR, FF: FF

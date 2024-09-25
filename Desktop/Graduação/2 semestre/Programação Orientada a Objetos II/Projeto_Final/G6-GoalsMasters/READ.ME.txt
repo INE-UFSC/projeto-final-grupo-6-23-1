@@ -1,0 +1,5 @@
+André Thiago Pfleger
+
+Segue em anexo o diagrama de classes, relatório final e código do jogo em arquivo ZIP. Estou mandando o arquivo com o código do jogo junto pois não ficou claro pra mim no enunciado da página do moodle o que deveria ser mandado.
+
+Link para o código atualizado no github: https://github.com/INE-UFSC/projeto-final-grupo-6-23-1

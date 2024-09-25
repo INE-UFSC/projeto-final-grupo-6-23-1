@@ -1,0 +1,43 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY demux1_4 IS
+PORT (
+f : IN std_logic;
+sel : IN std_logic_vector (1 DOWNTO 0);
+a, b, c, d : OUT std_logic
+);
+END demux1_4;
+
+ARCHITECTURE arch OF demux1_4 IS
+
+BEGIN
+if (f=1) then
+with sel select
+a <=
+1 when "00";
+0 when "01";
+0 when "10";
+0 when "11";
+b <=
+
+0 when "00";
+1 when "01";
+0 when "10";
+0 when "11";
+c <=
+
+0 when "00";
+0 when "01";
+1 when "10";
+0 when "11";
+d <=
+
+0 when "00";
+0 when "01";
+0 when "10";
+1 when "11";
+elsif (others => '0')
+
+END arch;

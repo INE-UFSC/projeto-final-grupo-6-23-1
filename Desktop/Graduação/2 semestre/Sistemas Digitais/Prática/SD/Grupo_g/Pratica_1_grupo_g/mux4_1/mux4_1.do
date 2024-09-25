@@ -1,0 +1,1 @@
+force /sel 00 0 ns, 01 10 ns, 10 20 ns, 11 30 ns, -r 60 ns

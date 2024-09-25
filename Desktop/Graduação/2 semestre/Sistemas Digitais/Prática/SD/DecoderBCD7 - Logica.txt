@@ -1,0 +1,13 @@
+ENTITY decodificadorBCD7Seg IS
+PORT (
+bcd : IN std_logic_vector(3 DOWNTO 0);
+a, b, c, d, e, f, g : OUT std_logic
+);
+END decodificadorBCD7Seg;
+
+ARCHITECTURE arch OF decodificadorBCD7Seg IS
+
+
+BEGIN
+END ARCHITECTURE;
+

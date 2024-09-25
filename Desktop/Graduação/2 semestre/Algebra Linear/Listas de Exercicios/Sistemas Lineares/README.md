@@ -1,0 +1,1 @@
+Exercícios 1.2.2 a 1.2.6 e 1.2.10 (páginas 58 a 64)
